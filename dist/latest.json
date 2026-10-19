@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "channel": "stable",
-  "version": "0.1.0",
-  "manifest_url": "https://cdn.jsdelivr.net/gh/makenwjz/hpgame@v0.1.0/dist/0.1.0/manifest.json",
-  "manifest_sha256": "9107f8dde61df14b65e54c2979241193385e1b62083737d648e8d466036d76bf"
+  "version": "0.1.1",
+  "manifest_url": "https://cdn.jsdelivr.net/gh/makenwjz/hpgame@v0.1.1/dist/0.1.1/manifest.json",
+  "manifest_sha256": "08dbd4730fb84a80bb8a4073b910602416ff1c5ba490088f85c24b4e2215f11d"
 }

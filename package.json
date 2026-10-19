@@ -1,6 +1,6 @@
 {
   "name": "hp-reverb",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,10 +8,18 @@
     "card": "node tools/build-card.mjs",
     "dist": "node tools/build-dist.mjs",
     "png": "node tools/pack-png.mjs",
-    "build": "npm run gen && npm run card && npm run dist && npm run png",
-    "check": "node tools/check-paths.mjs && node tools/check-contract.mjs && node tools/check-names.mjs",
+    "sheet": "node tools/sync-sheet.mjs",
+    "regex": "node tools/build-regex.mjs",
+    "build": "npm run gen && npm run sheet && npm run regex && npm run card && npm run dist && npm run png",
+    "check": "node tools/check-paths.mjs && node tools/check-contract.mjs && node tools/check-names.mjs && node tools/check-create.mjs",
+    "verify": "node tools/verify-dist.mjs && node tools/verify-png.mjs && node tools/verify-regex.mjs",
+    "preview": "node tools/render-preview.mjs",
+    "preview:check": "node tools/render-preview.mjs && node tools/check-preview.mjs",
+    "preview:shot": "node tools/render-preview.mjs && node tools/shot-preview.mjs",
     "test": "node tools/test-rules.mjs",
-    "all": "npm run build && npm run test && npm run check"
+    "all": "npm run build && npm run verify && npm run test && npm run check"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  }
 }

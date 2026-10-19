@@ -1,8 +1,9 @@
 {
-  "entries": 15,
-  "constantChars": 8919,
-  "cardJsonBytes": 37845,
+  "entries": 16,
+  "constantChars": 10007,
+  "cardJsonBytes": 217062,
   "topLevel": 15,
-  "paths": 67,
-  "generatedAt": "2026-10-19T11:06:59.960Z"
+  "paths": 72,
+  "scripts": 2,
+  "regex": 5
 }

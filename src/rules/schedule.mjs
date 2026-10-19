@@ -77,3 +77,35 @@ export function yearTick(stat) {
   for (const k of Object.keys(stat.五维)) if (stat.五维[k]) stat.五维[k].本年已得 = 0;
   return stat.时空.学年;
 }
+
+// ---------------- 学院分（学院杯积分） ----------------
+export const HOUSE_POINT_MIN = -200;
+export const HOUSE_POINT_MAX = 500;
+
+/** 学院分增减（带夹取）。来源见《五维与门槛》条目。 */
+export const HOUSE_POINT_RULES = {
+  课堂表现: 1, 作业O: 3, 作业E: 2, 公开比赛胜: 5, 主线节点完成: 5, 受表彰: 5, 帮教师做事: 2,
+  迟到: -1, 缺课: -2, 夜游被抓: -5, 当众出丑: -3, 记过: -10, 期限逾期: -5, 违反校规: -3,
+};
+
+export function addHousePoints(stat, reason, times = 1) {
+  const unit = HOUSE_POINT_RULES[reason];
+  if (unit === undefined) return { ok: false, reason: `未知学院分来源「${reason}」` };
+  const delta = unit * Math.max(1, Number(times) || 1);
+  const before = stat.主角.学院分 ?? 0;
+  const after = clampSched(before + delta, HOUSE_POINT_MIN, HOUSE_POINT_MAX);
+  stat.主角.学院分 = after;
+  return { ok: true, delta: after - before, before, after, reason };
+}
+
+/**
+ * 学年末学院分 → 魅力经验折算。
+ * 口径来自 `01-时间日程五维考试` §3.4（原文按「声望阶」给经验，这里换算成学院分档）。
+ * 返回应加的魅力学年经验（0 / 1 / 2）。
+ */
+export function housePointsToCharmExp(points) {
+  const p = Number(points) || 0;
+  if (p >= 200) return 2;
+  if (p >= 80) return 1;
+  return 0;
+}

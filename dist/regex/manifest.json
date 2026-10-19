@@ -1,0 +1,40 @@
+{
+  "count": 5,
+  "items": [
+    {
+      "scriptName": "01-变量块隐藏",
+      "id": "3e628240-f420-579e-92e7-419be0918651",
+      "findRegex": "/<UpdateVariable>[\\s\\S]*?<\\/UpdateVariable>/gi",
+      "bytes": 0,
+      "hasCapture": false
+    },
+    {
+      "scriptName": "01b-对AI隐藏状态栏占位符",
+      "id": "80b907a2-6fca-54be-825c-7b1e2ae84673",
+      "findRegex": "/<StatusPlaceHolderImpl\\/>/gi",
+      "bytes": 0,
+      "hasCapture": false
+    },
+    {
+      "scriptName": "02-未结算check兜底",
+      "id": "9157802f-e3e9-5ad8-8c2c-f9c024c10dc0",
+      "findRegex": "/<check\\b(?![^>]*data-src)[^>]*>([\\s\\S]*?)<\\/check>/gi",
+      "bytes": 96,
+      "hasCapture": true
+    },
+    {
+      "scriptName": "03-正文美化与状态栏",
+      "id": "b7c16a48-79e1-5f1e-b1df-efdd2a55ec3c",
+      "findRegex": "/<content[^>]*>([\\s\\S]*?)<\\/content>/is",
+      "bytes": 81217,
+      "hasCapture": true
+    },
+    {
+      "scriptName": "04-开局创角页",
+      "id": "1a495472-8fd7-5e81-b862-7ac338e71732",
+      "findRegex": "/<start>([\\s\\S]*?)<\\/start>/gsi",
+      "bytes": 75702,
+      "hasCapture": true
+    }
+  ]
+}

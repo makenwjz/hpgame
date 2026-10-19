@@ -1,0 +1,17 @@
+{
+  "id": "9157802f-e3e9-5ad8-8c2c-f9c024c10dc0",
+  "scriptName": "02-未结算check兜底",
+  "findRegex": "/<check\\b(?![^>]*data-src)[^>]*>([\\s\\S]*?)<\\/check>/gi",
+  "replaceString": "<span class=\"hp-unsettled-check\" title=\"这条检定未经脚本结算\">［未结算］$1</span>",
+  "trimStrings": [],
+  "placement": [
+    2
+  ],
+  "disabled": false,
+  "markdownOnly": true,
+  "promptOnly": false,
+  "runOnEdit": true,
+  "substituteRegex": 0,
+  "minDepth": null,
+  "maxDepth": null
+}

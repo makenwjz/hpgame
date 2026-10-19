@@ -4,6 +4,8 @@
 
 export const ACT_DO = ['陪人', '自习', '打工', '采买', '短行动', '休息', '潜入'];
 export const SLOT = ['周三', '周五', '周六', '周日'];
+/** 五维轴名：自习 / 性情倾向 / 门槛都用它，只在这里定义一次 */
+export const AXES = ['学业', '胆识', '魅力', '共情', '心志'];
 export const ROLL_TYPE = [
   '咒语命中', '魔药成败', '决斗', '疑点调查', '说服',
   '潜行', '照料生灵', '变形操作', '炼金配比', '飞行机动',
@@ -19,7 +21,8 @@ export const TIER = ['T1', 'T2', 'T3', '敌对'];
 
 /** 请求语法（供《请求契约》条目直接引用） */
 export const GRAMMAR = {
-  act: '<act do="陪人" target="罗娜·韦斯莱" slot="周三"/>',
+  act: '<act do="自习" axis="学业" slot="周三"/>',
+  actWith: '<act do="陪人" target="罗娜·韦斯莱" slot="周五"/>',
   roll: '<roll type="咒语命中" dc="普通" attr="魔力" spell="火焰熊熊" axis="胆识" foe="普通" action="撤退" retry="false"/>',
   affinity: '<affinity name="罗娜·韦斯莱" kind="帮助" delta="+8" reason="替她挡了扣分"/>',
   event: '<event kind="主线节点" name="入学与分院" state="已完成" date="1991年09月01日"/>',
@@ -32,16 +35,19 @@ export function renderContract() {
 全卡只有这一处定义请求语法。正文里只允许出现下面五类自闭合或成对标签，别的标签一律不写。
 
 【一、行动】${GRAMMAR.act}
+· 陪人时：${GRAMMAR.actWith}
 · do：${ACT_DO.join(' / ')}
 · slot：${SLOT.join(' / ')}
+· axis：只在 do="自习" 时写，取值 ${AXES.join(' / ')}；不写按学业。
 · 一次行动一个标签，写在正文第一行之前；不写就视为纯叙事，不扣行动点。
+· 本周行动点用满后，脚本自动做周结算（推进日期、清空安排、回体力）。
 
 【二、检定】${GRAMMAR.roll}
 · type：${ROLL_TYPE.join(' / ')}
 · dc：${DC.join(' / ')}（判定线 65 / 50 / 35 / 20）
 · foe：${FOE.join(' / ')}（0 / −5 / −10 / −15）
 · action：${ROLL_ACTION.join(' / ')}（撤退要掷；投降不掷）
-· attr 只写 魔力 / 体力 / 声望；spell 只在练过该咒语时写
+· attr 只写 魔力 / 体力 / 学院分；spell 只在练过该咒语时写
 · 骰子由脚本掷，模型不得声明结果，也不得自己写 <check>。
 
 【三、好感】${GRAMMAR.affinity}

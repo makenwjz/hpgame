@@ -31,20 +31,25 @@ export const flag = (dflt = false) => ({
 export const obj = shape => ({ kind: 'obj', shape, dflt: () => defaults(shape),
   norm: v => normalize(v && typeof v === 'object' && !Array.isArray(v) ? v : {}, shape) });
 export const list = (item, limit) => ({
-  kind: 'list', dflt: [], limit,
+  kind: 'list', dflt: () => [], limit,
   norm: v => {
     const arr = Array.isArray(v) ? v : [];
     const out = arr.map(x => (item.norm ? item.norm(x) : x));
     return limit ? out.slice(-limit) : out;
   },
 });
-export const record = (item, limit) => ({
-  kind: 'record', dflt: {}, limit,
+export const record = (item, limit, keyGuard) => ({
+  kind: 'record', dflt: () => ({}), limit, keyGuard,
   norm: v => {
     const src = v && typeof v === 'object' && !Array.isArray(v) ? v : {};
     const keys = Object.keys(src).slice(limit ? -limit : 0);
     const out = {};
-    for (const k of keys) out[k] = item.norm ? item.norm(src[k]) : src[k];
+    for (const k of keys) {
+      // 非法键直接丢弃：这是 v10.1「幽灵键」的根治点，
+      // 之前只在 sanitizePatch 里拦，而真实写入路径根本不走 sanitizePatch。
+      if (keyGuard && !keyGuard(k)) continue;
+      out[k] = item.norm ? item.norm(src[k]) : src[k];
+    }
     return out;
   },
 });
@@ -62,14 +67,29 @@ function normalize(input, shape) {
   return out;
 }
 
+// ---------------- 记录键合法性（必须在 Schema 之前定义） ----------------
+// 关系键 = 人物规范名；网键 = 「A▸B」边。
+export function isLegalPersonKey(k) {
+  if (!k) return false;
+  if (/\s/.test(k)) return false;
+  if (/rank/i.test(k)) return false;
+  return k.length <= 12;
+}
+export function isLegalEdgeKey(k) {
+  if (!k) return false;
+  return /^[^\s]+▸[^\s]+$/.test(k);
+}
+
 // ---------------- 15 容器 ----------------
 export const Schema = {
   主角: obj({
-    姓名: text(''), 性别: pick(['女', '男'], '女'), 血统: pick(['纯血', '混血', '麻瓜出身', '未知'], '未知'),
+    姓名: text(''), 性别: pick(['女', '男'], '男'), 血统: pick(['纯血', '混血', '麻瓜出身', '未知'], '未知'),
     出身: text(''), 学院: pick(['格兰芬多', '斯莱特林', '拉文克劳', '赫奇帕奇', '未分院'], '未分院'),
     年级: num(1, 1, 7), 魔杖: obj({ 木材: text(''), 杖芯: text('') }),
     体力: num(100, 0, 100), 魔力: num(100, 0, 100), 伤势: num(0, 0, 100),
-    声望: num(0, -3, 5), 零花钱: numOpen(0, 0),
+    // 学院分：学院杯积分（可正可负，学年内累加，年终排名）。
+    // 取代旧的「声望阶 −3..5」——阶只影响魅力折算，积分才是玩家能看见的数字。
+    学院分: num(0, -200, 500), 零花钱: numOpen(0, 0),
   }),
   时空: obj({
     学年: num(1, 1, 7), 周: num(1, 1, 43), 日期: text('1991年09月01日'),
@@ -77,7 +97,13 @@ export const Schema = {
   }),
   日程: obj({ 本周已用: num(0, 0, 4), 行动点上限: num(4, 0, 4), 本周安排: list(text(''), 4) }),
   五维: obj(Object.fromEntries(['学业', '胆识', '魅力', '共情', '心志'].map(k =>
-    [k, obj({ 阶: num(2, 1, 5), 经验: num(0, 0, 5) })]))),
+    [k, obj({
+      阶: num(2, 1, 5),
+      经验: num(0, 0, 5),
+      // 本年已得：学年内的经验累计，用来卡「每学年每维 ≤2 阶（12 经验）」。
+      // 之前 schedule.mjs 已经在读写它，但 schema 里没有 → 既不可见也不可校验。
+      本年已得: num(0, 0, 12),
+    })]))),
   关系: record(obj({
     Rank: num(1, 1, 10), 社群点: num(0, 0, 100), 已建立: flag(false), 已登场: flag(false),
     支线状态: pick(['未开始', '进行中', '已完成', '失败'], '未开始'),
@@ -85,8 +111,8 @@ export const Schema = {
     身高: num(170, 0, 260), 体重: num(55, 0, 200), 三围: text(''), 体型: text(''), 身体: text(''),
     名器评级: text(''), 名器: text(''), 当前任务: text(''),
     服装: obj({ 常服: text(''), 校服: text(''), 礼服: text(''), 内衣: text(''), 鞋袜: text(''), 饰品: text('') }),
-  }), 128),
-  网: record(obj({ 状态: pick(['如常', '紧张', '破裂', '结盟'], '如常'), 强度: num(1, 1, 5) }), 60),
+  }), 128, isLegalPersonKey),
+  网: record(obj({ 状态: pick(['如常', '紧张', '破裂', '结盟'], '如常'), 强度: num(1, 1, 5) }), 60, isLegalEdgeKey),
   秘密: obj({
     发现度: num(0, 0, 100), 哈莉已登场: flag(false),
     哈莉所在: pick(['', '宿舍', '行间', '失踪', '被带走'], ''), 共谋者: list(text(''), 5),
@@ -134,16 +160,11 @@ export function isAllowedPath(p) {
 }
 
 // 记录类容器的键必须是「规范名」，不是带空格/中文 rank 的伪键（v10.1 幽灵键的根因）
-export function isLegalPersonKey(k) {
-  if (!k) return false;
-  if (/\\s/.test(k)) return false;
-  if (/rank/i.test(k)) return false;
-  return k.length <= 12;
-}
+// 注：isLegalPersonKey / isLegalEdgeKey 已在文件上方定义（Schema 需要它们做 keyGuard）。
 export function isLegalKeyedPath(p) {
   const seg = p.split('/').filter(Boolean);
   if (seg[0] === '关系' && seg[1]) return isLegalPersonKey(seg[1]);
-  if (seg[0] === '网' && seg[1]) return /^[^\\s]+▸[^\\s]+$/.test(seg[1]);
+  if (seg[0] === '网' && seg[1]) return isLegalEdgeKey(seg[1]);
   return true;
 }
 

@@ -24,3 +24,7 @@ st/
 # ===== dist 是发布产物，必须入库（否则 CDN 404） =====
 !dist/
 !dist/**
+# 但本地验证产物与运行日志不入库
+dist/preview/
+dist/live/
+dist/*.log

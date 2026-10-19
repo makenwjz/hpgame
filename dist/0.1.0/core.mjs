@@ -33,20 +33,25 @@ const flag = (dflt = false) => ({
 const obj = shape => ({ kind: 'obj', shape, dflt: () => defaults(shape),
   norm: v => normalize(v && typeof v === 'object' && !Array.isArray(v) ? v : {}, shape) });
 const list = (item, limit) => ({
-  kind: 'list', dflt: [], limit,
+  kind: 'list', dflt: () => [], limit,
   norm: v => {
     const arr = Array.isArray(v) ? v : [];
     const out = arr.map(x => (item.norm ? item.norm(x) : x));
     return limit ? out.slice(-limit) : out;
   },
 });
-const record = (item, limit) => ({
-  kind: 'record', dflt: {}, limit,
+const record = (item, limit, keyGuard) => ({
+  kind: 'record', dflt: () => ({}), limit, keyGuard,
   norm: v => {
     const src = v && typeof v === 'object' && !Array.isArray(v) ? v : {};
     const keys = Object.keys(src).slice(limit ? -limit : 0);
     const out = {};
-    for (const k of keys) out[k] = item.norm ? item.norm(src[k]) : src[k];
+    for (const k of keys) {
+      // 非法键直接丢弃：这是 v10.1「幽灵键」的根治点，
+      // 之前只在 sanitizePatch 里拦，而真实写入路径根本不走 sanitizePatch。
+      if (keyGuard && !keyGuard(k)) continue;
+      out[k] = item.norm ? item.norm(src[k]) : src[k];
+    }
     return out;
   },
 });
@@ -64,14 +69,29 @@ function normalize(input, shape) {
   return out;
 }
 
+// ---------------- 记录键合法性（必须在 Schema 之前定义） ----------------
+// 关系键 = 人物规范名；网键 = 「A▸B」边。
+function isLegalPersonKey(k) {
+  if (!k) return false;
+  if (/\s/.test(k)) return false;
+  if (/rank/i.test(k)) return false;
+  return k.length <= 12;
+}
+function isLegalEdgeKey(k) {
+  if (!k) return false;
+  return /^[^\s]+▸[^\s]+$/.test(k);
+}
+
 // ---------------- 15 容器 ----------------
 const Schema = {
   主角: obj({
-    姓名: text(''), 性别: pick(['女', '男'], '女'), 血统: pick(['纯血', '混血', '麻瓜出身', '未知'], '未知'),
+    姓名: text(''), 性别: pick(['女', '男'], '男'), 血统: pick(['纯血', '混血', '麻瓜出身', '未知'], '未知'),
     出身: text(''), 学院: pick(['格兰芬多', '斯莱特林', '拉文克劳', '赫奇帕奇', '未分院'], '未分院'),
     年级: num(1, 1, 7), 魔杖: obj({ 木材: text(''), 杖芯: text('') }),
     体力: num(100, 0, 100), 魔力: num(100, 0, 100), 伤势: num(0, 0, 100),
-    声望: num(0, -3, 5), 零花钱: numOpen(0, 0),
+    // 学院分：学院杯积分（可正可负，学年内累加，年终排名）。
+    // 取代旧的「声望阶 −3..5」——阶只影响魅力折算，积分才是玩家能看见的数字。
+    学院分: num(0, -200, 500), 零花钱: numOpen(0, 0),
   }),
   时空: obj({
     学年: num(1, 1, 7), 周: num(1, 1, 43), 日期: text('1991年09月01日'),
@@ -79,7 +99,13 @@ const Schema = {
   }),
   日程: obj({ 本周已用: num(0, 0, 4), 行动点上限: num(4, 0, 4), 本周安排: list(text(''), 4) }),
   五维: obj(Object.fromEntries(['学业', '胆识', '魅力', '共情', '心志'].map(k =>
-    [k, obj({ 阶: num(2, 1, 5), 经验: num(0, 0, 5) })]))),
+    [k, obj({
+      阶: num(2, 1, 5),
+      经验: num(0, 0, 5),
+      // 本年已得：学年内的经验累计，用来卡「每学年每维 ≤2 阶（12 经验）」。
+      // 之前 schedule.mjs 已经在读写它，但 schema 里没有 → 既不可见也不可校验。
+      本年已得: num(0, 0, 12),
+    })]))),
   关系: record(obj({
     Rank: num(1, 1, 10), 社群点: num(0, 0, 100), 已建立: flag(false), 已登场: flag(false),
     支线状态: pick(['未开始', '进行中', '已完成', '失败'], '未开始'),
@@ -87,8 +113,8 @@ const Schema = {
     身高: num(170, 0, 260), 体重: num(55, 0, 200), 三围: text(''), 体型: text(''), 身体: text(''),
     名器评级: text(''), 名器: text(''), 当前任务: text(''),
     服装: obj({ 常服: text(''), 校服: text(''), 礼服: text(''), 内衣: text(''), 鞋袜: text(''), 饰品: text('') }),
-  }), 128),
-  网: record(obj({ 状态: pick(['如常', '紧张', '破裂', '结盟'], '如常'), 强度: num(1, 1, 5) }), 60),
+  }), 128, isLegalPersonKey),
+  网: record(obj({ 状态: pick(['如常', '紧张', '破裂', '结盟'], '如常'), 强度: num(1, 1, 5) }), 60, isLegalEdgeKey),
   秘密: obj({
     发现度: num(0, 0, 100), 哈莉已登场: flag(false),
     哈莉所在: pick(['', '宿舍', '行间', '失踪', '被带走'], ''), 共谋者: list(text(''), 5),
@@ -136,16 +162,11 @@ function isAllowedPath(p) {
 }
 
 // 记录类容器的键必须是「规范名」，不是带空格/中文 rank 的伪键（v10.1 幽灵键的根因）
-function isLegalPersonKey(k) {
-  if (!k) return false;
-  if (/\\s/.test(k)) return false;
-  if (/rank/i.test(k)) return false;
-  return k.length <= 12;
-}
+// 注：isLegalPersonKey / isLegalEdgeKey 已在文件上方定义（Schema 需要它们做 keyGuard）。
 function isLegalKeyedPath(p) {
   const seg = p.split('/').filter(Boolean);
   if (seg[0] === '关系' && seg[1]) return isLegalPersonKey(seg[1]);
-  if (seg[0] === '网' && seg[1]) return /^[^\\s]+▸[^\\s]+$/.test(seg[1]);
+  if (seg[0] === '网' && seg[1]) return isLegalEdgeKey(seg[1]);
   return true;
 }
 
@@ -265,7 +286,7 @@ const CHECK_TYPES = {
   魔药成败: { attr: '魔力', settle: { 成功: { 魔力: -2 }, 部分成功: { 魔力: -4, 伤势: 3 }, 失败: { 体力: -8, 伤势: 5 } } },
   决斗: { attr: '体力', settle: { 成功: { 体力: -5 }, 部分成功: { 体力: -10, 伤势: 5 }, 失败: { 体力: -15, 伤势: 10 } } },
   疑点调查: { attr: '魔力', settle: { 成功: { 体力: -2 }, 部分成功: { 体力: -5 }, 失败: { 体力: -5, 伤势: 5 } } },
-  说服: { attr: '声望', settle: { 成功: {}, 部分成功: { 社群: -2 }, 失败: { 社群: -5 } } },
+  说服: { attr: '学院分', settle: { 成功: {}, 部分成功: { 社群: -2 }, 失败: { 社群: -5 } } },
   潜行: { attr: '体力', settle: { 成功: { 体力: -3 }, 部分成功: { 体力: -5, 伤势: 2 }, 失败: { 体力: -8, 伤势: 5 } } },
   照料生灵: { attr: '魔力', settle: { 成功: { 魔力: -2 }, 部分成功: { 魔力: -4 }, 失败: { 魔力: -6, 伤势: 3 } } },
   变形操作: { attr: '魔力', settle: { 成功: { 魔力: -3 }, 部分成功: { 魔力: -6, 伤势: 3 }, 失败: { 魔力: -10, 伤势: 6 } } },
@@ -273,7 +294,7 @@ const CHECK_TYPES = {
   飞行机动: { attr: '体力', settle: { 成功: { 体力: -4 }, 部分成功: { 体力: -8, 伤势: 4 }, 失败: { 体力: -12, 伤势: 8 } } },
 };
 
-const DELTA_CAP = { 体力: 40, 魔力: 40, 伤势: 30, 声望: 15, 社群: 10 };
+const DELTA_CAP = { 体力: 40, 魔力: 40, 伤势: 30, 学院分: 15, 社群: 10 };
 const clampRoll = (v, a, b) => Math.min(Math.max(v, a), b);
 
 /** 判定线 */
@@ -423,6 +444,38 @@ function yearTick(stat) {
   return stat.时空.学年;
 }
 
+// ---------------- 学院分（学院杯积分） ----------------
+const HOUSE_POINT_MIN = -200;
+const HOUSE_POINT_MAX = 500;
+
+/** 学院分增减（带夹取）。来源见《五维与门槛》条目。 */
+const HOUSE_POINT_RULES = {
+  课堂表现: 1, 作业O: 3, 作业E: 2, 公开比赛胜: 5, 主线节点完成: 5, 受表彰: 5, 帮教师做事: 2,
+  迟到: -1, 缺课: -2, 夜游被抓: -5, 当众出丑: -3, 记过: -10, 期限逾期: -5, 违反校规: -3,
+};
+
+function addHousePoints(stat, reason, times = 1) {
+  const unit = HOUSE_POINT_RULES[reason];
+  if (unit === undefined) return { ok: false, reason: `未知学院分来源「${reason}」` };
+  const delta = unit * Math.max(1, Number(times) || 1);
+  const before = stat.主角.学院分 ?? 0;
+  const after = clampSched(before + delta, HOUSE_POINT_MIN, HOUSE_POINT_MAX);
+  stat.主角.学院分 = after;
+  return { ok: true, delta: after - before, before, after, reason };
+}
+
+/**
+ * 学年末学院分 → 魅力经验折算。
+ * 口径来自 `01-时间日程五维考试` §3.4（原文按「声望阶」给经验，这里换算成学院分档）。
+ * 返回应加的魅力学年经验（0 / 1 / 2）。
+ */
+function housePointsToCharmExp(points) {
+  const p = Number(points) || 0;
+  if (p >= 200) return 2;
+  if (p >= 80) return 1;
+  return 0;
+}
+
 // ---- src/contract.mjs ----
 // src/contract.mjs
 // 全卡唯一契约源：脚本常量、提示词条目都由这里生成。
@@ -430,6 +483,8 @@ function yearTick(stat) {
 
 const ACT_DO = ['陪人', '自习', '打工', '采买', '短行动', '休息', '潜入'];
 const SLOT = ['周三', '周五', '周六', '周日'];
+/** 五维轴名：自习 / 性情倾向 / 门槛都用它，只在这里定义一次 */
+const AXES = ['学业', '胆识', '魅力', '共情', '心志'];
 const ROLL_TYPE = [
   '咒语命中', '魔药成败', '决斗', '疑点调查', '说服',
   '潜行', '照料生灵', '变形操作', '炼金配比', '飞行机动',
@@ -445,7 +500,8 @@ const TIER = ['T1', 'T2', 'T3', '敌对'];
 
 /** 请求语法（供《请求契约》条目直接引用） */
 const GRAMMAR = {
-  act: '<act do="陪人" target="罗娜·韦斯莱" slot="周三"/>',
+  act: '<act do="自习" axis="学业" slot="周三"/>',
+  actWith: '<act do="陪人" target="罗娜·韦斯莱" slot="周五"/>',
   roll: '<roll type="咒语命中" dc="普通" attr="魔力" spell="火焰熊熊" axis="胆识" foe="普通" action="撤退" retry="false"/>',
   affinity: '<affinity name="罗娜·韦斯莱" kind="帮助" delta="+8" reason="替她挡了扣分"/>',
   event: '<event kind="主线节点" name="入学与分院" state="已完成" date="1991年09月01日"/>',
@@ -458,16 +514,19 @@ function renderContract() {
 全卡只有这一处定义请求语法。正文里只允许出现下面五类自闭合或成对标签，别的标签一律不写。
 
 【一、行动】${GRAMMAR.act}
+· 陪人时：${GRAMMAR.actWith}
 · do：${ACT_DO.join(' / ')}
 · slot：${SLOT.join(' / ')}
+· axis：只在 do="自习" 时写，取值 ${AXES.join(' / ')}；不写按学业。
 · 一次行动一个标签，写在正文第一行之前；不写就视为纯叙事，不扣行动点。
+· 本周行动点用满后，脚本自动做周结算（推进日期、清空安排、回体力）。
 
 【二、检定】${GRAMMAR.roll}
 · type：${ROLL_TYPE.join(' / ')}
 · dc：${DC.join(' / ')}（判定线 65 / 50 / 35 / 20）
 · foe：${FOE.join(' / ')}（0 / −5 / −10 / −15）
 · action：${ROLL_ACTION.join(' / ')}（撤退要掷；投降不掷）
-· attr 只写 魔力 / 体力 / 声望；spell 只在练过该咒语时写
+· attr 只写 魔力 / 体力 / 学院分；spell 只在练过该咒语时写
 · 骰子由脚本掷，模型不得声明结果，也不得自己写 <check>。
 
 【三、好感】${GRAMMAR.affinity}
@@ -498,6 +557,9 @@ function renderContract() {
 // 职责：解析正文里的请求标签 → 调用纯函数规则 → 写回变量与正文 → 弹回执。
 // 边界：不写叙事；所有数值只在这里落地。
 // 注意：Tavern Helper / MVU 的具体 API 以目标运行时为准，本文件全部做了能力探测。
+//
+// 设计要点：结算逻辑全部收在 settleText() 里（纯函数，不碰 DOM/MVU），
+// handleMessage() 只负责「读 → 调 settleText → 写」。这样单测可以直接测结算。
 
 
 
@@ -509,6 +571,7 @@ const TAG = {
   roll: /<roll\b[^>]*?(?:\/>|>\s*<\/roll\s*>)/gi,
   affinity: /<affinity\b[^>]*?(?:\/>|>\s*<\/affinity\s*>)/gi,
   event: /<event\b[^>]*?(?:\/>|>\s*<\/event\s*>)/gi,
+  ability: /<ability\b([^>]*)>([\s\S]*?)<\/ability\s*>/gi,
   check: /<check\b[^>]*?>[\s\S]*?<\/check>/gi,
 };
 
@@ -593,44 +656,92 @@ function allAxes(stat) {
   return Object.values(stat.五维 ?? {}).map(v => v?.阶 ?? 2);
 }
 
-/** 处理一条消息里的全部请求 */
-async function handleMessage(mid) {
-  const raw = await readText(mid);
-  if (!raw) return;
-  let text = raw;
-  const stat = (await readStat(mid)) ?? defaultStat();
+/** 打工收入（固定值，可测） */
+const WORK_PAY = { 加隆: 3, 西可: 8 };
+
+/**
+ * 纯结算：把一段正文里的请求全部解算到 stat 上。
+ * 不碰 DOM / MVU / 网络，因此可以直接单测。
+ *
+ * @param {string} raw 原始正文
+ * @param {object} stat 变量对象（会被就地修改）
+ * @param {{rng?:()=>number, weeklySame?:Map<string,number>}} opts
+ * @returns {{text:string, notes:string[], changed:boolean}}
+ */
+function settleText(raw, stat, opts = {}) {
+  const rng = opts.rng;
   const notes = [];
   let changed = false;
+  let text = String(raw ?? '');
 
-  // ---- act ----
+  // ---- 0. 先剥模型自写的 <check> ----
+  // 必须最先做：roll 分支会在后面插入合法的 <check>，
+  // 若放在最后就会把脚本自己产出的 check 一并删掉（v0.1.0 的真实 bug）。
+  // 用 replace 而不是 test()：带 /g 的正则复用 .test() 会残留 lastIndex，导致漏判。
+  const stripped = text.replace(TAG.check, '');
+  if (stripped !== text) {
+    notes.push('已剥离模型自写的 <check>');
+    text = stripped;
+  }
+
+  // ---- 1. act ----
   text = text.replace(TAG.act, (tag) => {
     const a = attrs(tag);
     if (!C.ACT_DO.includes(a.do)) { notes.push(`未知行动「${a.do}」，按休息处理`); a.do = '休息'; }
     const r = spend(stat, a.do);
     if (!r.ok) { notes.push(r.reason); return ''; }
-    if (a.do === '潜入') { stat.宫殿.在宫殿 = true; stat.主角.体力 = Math.max(0, stat.主角.体力 - 10); }
-    if (a.do === '休息') { stat.主角.体力 = Math.min(100, stat.主角.体力 + 25); stat.主角.魔力 = Math.min(100, stat.主角.魔力 + 25); }
+
+    if (a.do === '潜入') {
+      stat.宫殿.在宫殿 = true;
+      stat.主角.体力 = Math.max(0, (stat.主角.体力 ?? 0) - 10);
+    }
+    if (a.do === '休息') {
+      stat.主角.体力 = Math.min(100, (stat.主角.体力 ?? 0) + 25);
+      stat.主角.魔力 = Math.min(100, (stat.主角.魔力 ?? 0) + 25);
+      stat.主角.伤势 = Math.max(0, (stat.主角.伤势 ?? 0) - 10);
+    }
+    if (a.do === '自习') {
+      // axis 缺省按学业；这样 <act do="自习"/> 也有产出，不会白扣一点。
+      const axis = C.AXES.includes(a.axis) ? a.axis : '学业';
+      const e = addExp(stat, axis, 1);
+      if (e.ok) notes.push(`${axis} +${e.gain} 经验${e.up ? `（升到 ${e.stage} 阶）` : `（${e.exp}/6）`}`);
+      else notes.push(`${axis}：${e.reason ?? '未加经验'}`);
+    }
+    if (a.do === '打工') {
+      stat.物品与金钱.钱.加隆 += WORK_PAY.加隆;
+      stat.物品与金钱.钱.西可 += WORK_PAY.西可;
+      notes.push(`打工收入 ${WORK_PAY.加隆} 加隆 ${WORK_PAY.西可} 西可`);
+    }
     changed = true;
-    notes.push(`${a.do} −${r.cost} 点（${stat.日程.本周已用}/4）`);
+    notes.push(`${a.do} −${r.cost} 点（${stat.日程.本周已用}/${stat.日程.行动点上限}）`);
     return '';
   });
 
-  // ---- roll ----
+  // ---- 2. roll ----
   text = text.replace(TAG.roll, (tag) => {
     const a = attrs(tag);
     const r = resolve(a, {
       studyTier: stat.五维?.学业?.阶 ?? 2,
       spellSkill: stat.能力?.咒语掌握?.[a.spell] ?? 0,
-      companions: Array.isArray(stat.队伍) ? Object.keys(stat.队伍).length - 1 : 0,
+      // 队伍是 record（object），不是数组——旧代码用 Array.isArray 判断，恒为 false。
+      companions: Math.max(0, Object.keys(stat.队伍 ?? {}).length),
       relics: stat.宫殿?.本局战利品?.length ?? 0,
       axisTier: stat.五维?.[a.axis]?.阶 ?? 2,
       echo: stat.宫殿?.警戒 ?? 0,
       injury: stat.主角?.伤势 ?? 0,
-    });
+    }, rng);
+
     for (const [k, v] of Object.entries(r.deltas)) {
       if (k === '社群') continue;
-      const path = ['体力', '魔力', '伤势', '声望'].includes(k) ? stat.主角 : null;
-      if (path) path[k] = Math.max(0, Math.min(100, (path[k] ?? 0) + v));
+      if (k === '学院分') {
+        // 学院分有独立口径（−200~500），不能套 0~100 的夹取
+        const before = stat.主角.学院分 ?? 0;
+        stat.主角.学院分 = Math.min(500, Math.max(-200, before + v));
+        continue;
+      }
+      if (['体力', '魔力', '伤势'].includes(k)) {
+        stat.主角[k] = clamp(stat.主角[k] ?? 0, v, 0, 100);
+      }
     }
     stat.宫殿.警戒 = Math.min(100, (stat.宫殿.警戒 ?? 0) + r.echoGain);
     changed = true;
@@ -638,40 +749,95 @@ async function handleMessage(mid) {
     return renderCheck(r);
   });
 
-  // ---- affinity ----
+  // ---- 3. affinity ----
+  const weeklySame = opts.weeklySame instanceof Map ? opts.weeklySame : new Map();
   text = text.replace(TAG.affinity, (tag) => {
     const a = attrs(tag);
     const name = (a.name || '').trim();
     if (!name) return '';
+    // 键必须是规范名，否则直接丢弃（否则会把幽灵键写进 /关系）
+    if (!isLegalPersonKey(name)) { notes.push(`关系键不合法，已忽略：「${name}」`); return ''; }
+
     const rel = stat.关系[name] ??= { Rank: 1, 社群点: 0 };
     const res = settleAffinity(
       { rank: rel.Rank ?? 1, points: rel.社群点 ?? 0 },
       { kind: a.kind, delta: Number(a.delta) || 0 },
-      { axisTier: axisTier(stat, name), axis: AXIS_OF.get(name), axes: allAxes(stat) },
+      {
+        axisTier: axisTier(stat, name),
+        axis: AXIS_OF.get(name),
+        axes: allAxes(stat),
+        // 周内第二次 ×0.5：之前运行时从不传这两个参数，衰减规则只活在单测里
+        weeklySame: weeklySame.get(name) ?? 0,
+        sameKindStreak: weeklySame.get(`${name}|${a.kind}`) ?? 0,
+      },
     );
+    weeklySame.set(name, (weeklySame.get(name) ?? 0) + 1);
+    weeklySame.set(`${name}|${a.kind}`, (weeklySame.get(`${name}|${a.kind}`) ?? 0) + 1);
+
     rel.Rank = res.rank; rel.社群点 = res.points; rel.已建立 = true;
     changed = true;
     notes.push(`${name} ${res.receipt}`);
     return '';
   });
 
-  // ---- event（只记录，不改 Rank）----
+  // ---- 4. event（只记录，不改 Rank；主线节点完成给学院分）----
   text = text.replace(TAG.event, (tag) => {
     const a = attrs(tag);
     if (!a.kind || !a.name) return tag;
     if (a.kind === '主线节点') {
-      stat.事件线索.主线节点进度[a.name] = C.EVENT_STATE.includes(a.state) ? a.state : '进行中';
+      const prev = stat.事件线索.主线节点进度[a.name];
+      const next = C.EVENT_STATE.includes(a.state) ? a.state : '进行中';
+      stat.事件线索.主线节点进度[a.name] = next;
       stat.事件线索.当前事件 = a.name;
+      // 首次转为「已完成」时给学院分，避免重复结算
+      if (next === '已完成' && prev !== '已完成') {
+        const hp = addHousePoints(stat, '主线节点完成');
+        if (hp.ok) notes.push(`学院分 ${hp.delta >= 0 ? '+' : ''}${hp.delta}（主线节点完成）→ ${hp.after}`);
+      }
+      changed = true;
     } else if (a.kind === '支线') {
       const arr = stat.事件线索.进行中支线;
-      if (!arr.includes(a.name)) arr.push(a.name);
+      if (!arr.includes(a.name)) { arr.push(a.name); changed = true; }
     }
-    changed = true;
     return tag; // 保留标签给正文渲染
   });
 
-  // ---- 剥离模型自写的 check ----
-  if (TAG.check.test(text)) { text = text.replace(TAG.check, ''); notes.push('已剥离模型自写的 <check>'); }
+  // ---- 5. ability（契约里有，之前运行时完全不处理）----
+  text = text.replace(TAG.ability, (tag, attrStr, inner) => {
+    const a = attrs(attrStr);
+    const m = String(a.name || '').match(/^(.+?)\s+(\d+)\s*→\s*(\d+)$/);
+    if (m) {
+      const [, spell, , to] = m;
+      const next = Math.max(0, Math.min(20, Number(to)));
+      const book = stat.能力.咒语掌握;
+      if (book[spell] !== next) { book[spell] = next; changed = true; }
+    }
+    return tag; // 保留标签给正文渲染
+  });
+
+  // ---- 6. 行动点用满 → 周结算 ----
+  // 之前 weekTick 从未被调用，导致一周永远结束不了（第 4 点之后永久「这周的安排满了」）。
+  const cap = stat.日程.行动点上限 ?? 4;
+  if ((stat.日程.本周已用 ?? 0) >= cap) {
+    const r = weekTick(stat);
+    changed = true;
+    notes.push(`周结算：进入第 ${r.week} 周（${r.date}）`);
+  }
+
+  return { text, notes, changed };
+}
+
+function clamp(cur, delta, lo, hi) {
+  return Math.min(hi, Math.max(lo, (cur ?? 0) + delta));
+}
+
+/** 处理一条消息里的全部请求 */
+async function handleMessage(mid) {
+  const raw = await readText(mid);
+  if (!raw) return;
+  const stat = (await readStat(mid)) ?? defaultStat();
+
+  const { text, notes, changed } = settleText(raw, stat);
 
   if (changed) {
     await writeStat(mid, stat);
@@ -703,3 +869,5 @@ async function install() {
   console.log(LOG, '已就绪');
   return { ok: true };
 }
+
+export { num, numOpen, text, pick, flag, obj, list, record, isLegalPersonKey, isLegalEdgeKey, Schema, ROOT_KEYS, normalizeStat, defaultStat, WHITELIST, isAllowedPath, isLegalKeyedPath, sanitizePatch, listPaths, KIND_CAP, KIND_MIN, SINGLE_CAP, RANK_GATES, RANK10_MIN_AXES, RANK10_MIN_TIER, clampAff, clampDelta, decay, gateOk, rank10Ok, settleAffinity, betrayalPenalty, DIFFICULTY, FOE_MOD, PARTIAL_WINDOW, CHECK_TYPES, DELTA_CAP, computeLine, judge, settle, resolve, renderCheck, POINTS_PER_WEEK, COST, STAGE_STEP, STAGE_MAX, STAGE_PER_YEAR, canDo, spend, addExp, weekTick, examScore, examGrade, yearTick, HOUSE_POINT_MIN, HOUSE_POINT_MAX, HOUSE_POINT_RULES, addHousePoints, housePointsToCharmExp, ACT_DO, SLOT, AXES, ROLL_TYPE, DC, FOE, ROLL_ACTION, AFFINITY_KIND, AFFINITY_LINE, EVENT_KIND, EVENT_STATE, TIER, GRAMMAR, renderContract, registerAxis, settleText, install, handleMessage };

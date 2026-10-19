@@ -1,0 +1,17 @@
+{
+  "id": "3e628240-f420-579e-92e7-419be0918651",
+  "scriptName": "01-变量块隐藏",
+  "findRegex": "/<UpdateVariable>[\\s\\S]*?<\\/UpdateVariable>/gi",
+  "replaceString": "",
+  "trimStrings": [],
+  "placement": [
+    2
+  ],
+  "disabled": false,
+  "markdownOnly": true,
+  "promptOnly": false,
+  "runOnEdit": true,
+  "substituteRegex": 0,
+  "minDepth": null,
+  "maxDepth": null
+}

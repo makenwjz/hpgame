@@ -1,0 +1,17 @@
+{
+  "id": "80b907a2-6fca-54be-825c-7b1e2ae84673",
+  "scriptName": "01b-对AI隐藏状态栏占位符",
+  "findRegex": "/<StatusPlaceHolderImpl\\/>/gi",
+  "replaceString": "",
+  "trimStrings": [],
+  "placement": [
+    2
+  ],
+  "disabled": false,
+  "markdownOnly": false,
+  "promptOnly": true,
+  "runOnEdit": true,
+  "substituteRegex": 0,
+  "minDepth": null,
+  "maxDepth": null
+}

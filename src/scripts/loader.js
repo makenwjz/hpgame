@@ -3,15 +3,15 @@
 // 版本纪律：只认 tag，不认分支；tag 不可变。
 
 const CARD = '哈莉·波特·行间';
-const VERSION = '0.1.0';           // 与 character_version 对齐
+const VERSION = '0.1.1';           // 与 character_version 对齐
 const ORG = 'makenwjz';
 const REPO = 'hpgame';
 
 const SOURCES = [
-  `https://cdn.jsdelivr.net/gh/${ORG}/${REPO}@v${VERSION}/dist/core.mjs`,
-  `https://fastly.jsdelivr.net/gh/${ORG}/${REPO}@v${VERSION}/dist/core.mjs`,
-  `https://gcore.jsdelivr.net/gh/${ORG}/${REPO}@v${VERSION}/dist/core.mjs`,
-  `https://raw.githubusercontent.com/${ORG}/${REPO}/v${VERSION}/dist/core.mjs`,
+  `https://cdn.jsdelivr.net/gh/${ORG}/${REPO}@v${VERSION}/dist/${VERSION}/core.mjs`,
+  `https://fastly.jsdelivr.net/gh/${ORG}/${REPO}@v${VERSION}/dist/${VERSION}/core.mjs`,
+  `https://gcore.jsdelivr.net/gh/${ORG}/${REPO}@v${VERSION}/dist/${VERSION}/core.mjs`,
+  `https://raw.githubusercontent.com/${ORG}/${REPO}/v${VERSION}/dist/${VERSION}/core.mjs`,
 ];
 
 function panel(msg) {
@@ -48,13 +48,26 @@ function panel(msg) {
 
   if (!mod) {
     panel(`【${CARD}】核心脚本加载失败\n\n四个源都不可用：\n${errors.join('\n')}\n\n` +
-      `继续用卡内世界书可以玩，但数值不会自动结算。\n请检查网络，或到 GitHub 手动下载 dist/core.mjs 后用酒馆助手脚本库导入。`);
+      `继续用卡内世界书可以玩，但数值不会自动结算。\n请检查网络，或到 GitHub 手动下载 dist/${VERSION}/core.mjs 后用酒馆助手脚本库导入。`);
     console.error('[HP-Reverb] 加载失败', errors);
     return;
   }
 
+  // 模块下载成功但没导出 install：说明产物打包有问题（曾经静默失败过一次）。
+  // 必须显式报错，不能当作「已加载」继续。
+  if (typeof mod.install !== 'function') {
+    const got = Object.keys(mod);
+    panel(`【${CARD}】核心脚本已下载，但产物不可用\n\n` +
+      `来源：${used}\n` +
+      `问题：模块没有导出 install()\n` +
+      `实际导出：${got.length ? got.slice(0, 12).join(', ') + (got.length > 12 ? ' …' : '') : '(空)'}\n\n` +
+      `这通常是 build-dist 打包时丢了 export。请重新构建并发布新 tag。`);
+    console.error('[HP-Reverb] 产物缺少 install', got);
+    return;
+  }
+
   try {
-    if (typeof mod.install === 'function') await mod.install();
+    await mod.install();
     console.log(`[HP-Reverb] 核心已加载：${used}`);
     globalThis.__HP_REVERB_VERSION__ = VERSION;
   } catch (e) {
