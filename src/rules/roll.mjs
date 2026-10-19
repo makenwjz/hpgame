@@ -24,7 +24,7 @@ export const CHECK_TYPES = {
 };
 
 export const DELTA_CAP = { 体力: 40, 魔力: 40, 伤势: 30, 声望: 15, 社群: 10 };
-const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+const clampRoll = (v, a, b) => Math.min(Math.max(v, a), b);
 
 /** 判定线 */
 export function computeLine(opts = {}) {
@@ -38,16 +38,16 @@ export function computeLine(opts = {}) {
 
   let line = 50;
   add('基础', 50);
-  const school = clamp(Number(studyTier) * 2, 0, 10); line += add('学派', school);
-  const skill = clamp(Math.floor(Number(spellSkill) / 2), 0, 10); line += add('熟练', skill);
-  const comp = clamp(Number(companions) * 3 + Number(support), 0, 20); line += add('同行', comp);
-  const rel = clamp(Number(relics), 0, 12); line += add('残留', rel);
-  const axis = clamp((Number(axisTier) - 2) * 2, -6, 6); line += add('五维', axis);
+  const school = clampRoll(Number(studyTier) * 2, 0, 10); line += add('学派', school);
+  const skill = clampRoll(Math.floor(Number(spellSkill) / 2), 0, 10); line += add('熟练', skill);
+  const comp = clampRoll(Number(companions) * 3 + Number(support), 0, 20); line += add('同行', comp);
+  const rel = clampRoll(Number(relics), 0, 12); line += add('残留', rel);
+  const axis = clampRoll((Number(axisTier) - 2) * 2, -6, 6); line += add('五维', axis);
   const foeMod = -(FOE_MOD[foe] ?? 0); line += add('敌人', foeMod);
   const echoMod = Number(echo) >= 80 ? -10 : Number(echo) >= 60 ? -5 : 0; line += add('回声', echoMod);
   const inj = Number(injury) >= 50 ? -5 : 0; line += add('伤势', inj);
 
-  return { line: clamp(Math.round(line), 5, 95), parts, type, dc, foe };
+  return { line: clampRoll(Math.round(line), 5, 95), parts, type, dc, foe };
 }
 
 /** 判定 */
@@ -68,7 +68,7 @@ export function settle(type, result, scale = 1, critical = false) {
   for (const [k, v] of Object.entries(base)) {
     let d = v < 0 ? Math.round(v * mult) : Math.round(v * mult);
     if (d !== 0 && Math.abs(d) < 1) d = Math.sign(v);
-    out[k] = clamp(d, -DELTA_CAP[k], DELTA_CAP[k]);
+    out[k] = clampRoll(d, -DELTA_CAP[k], DELTA_CAP[k]);
   }
   return out;
 }

@@ -5,7 +5,7 @@ export const STAGE_STEP = 6;         // 每阶 6 经验
 export const STAGE_MAX = 5;
 export const STAGE_PER_YEAR = 2;     // 每学年每维最多 2 阶
 
-const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+const clampSched = (v, a, b) => Math.min(Math.max(v, a), b);
 
 export function canDo(used, doWhat) {
   const cost = COST[doWhat] ?? 1;
@@ -42,7 +42,7 @@ export function weekTick(stat) {
   const s = stat;
   s.日程.本周已用 = 0;
   s.日程.本周安排 = [];
-  s.时空.周 = clamp((s.时空.周 ?? 1) + 1, 1, 43);
+  s.时空.周 = clampSched((s.时空.周 ?? 1) + 1, 1, 43);
   // 日期 = 1991-09-01 + (周-1)*7
   const base = new Date(Date.UTC(1991, 8, 1));
   base.setUTCDate(base.getUTCDate() + (s.时空.周 - 1) * 7);
@@ -50,9 +50,9 @@ export function weekTick(stat) {
   s.时空.日期 = `${base.getUTCFullYear()}年${p(base.getUTCMonth() + 1)}月${p(base.getUTCDate())}日`;
   s.时空.时段 = '上午';
   const rest = (s.主角.伤势 ?? 0) >= 50 ? 5 : 10;
-  s.主角.体力 = clamp((s.主角.体力 ?? 100) + rest, 0, 100);
-  s.主角.魔力 = clamp((s.主角.魔力 ?? 100) + rest, 0, 100);
-  if (!s.宫殿?.在宫殿) s.主角.伤势 = clamp((s.主角.伤势 ?? 0) - 5, 0, 100);
+  s.主角.体力 = clampSched((s.主角.体力 ?? 100) + rest, 0, 100);
+  s.主角.魔力 = clampSched((s.主角.魔力 ?? 100) + rest, 0, 100);
+  if (!s.宫殿?.在宫殿) s.主角.伤势 = clampSched((s.主角.伤势 ?? 0) - 5, 0, 100);
   return { week: s.时空.周, date: s.时空.日期 };
 }
 
@@ -72,7 +72,7 @@ export function examGrade(score) {
 
 /** 学年切换：清子上限 */
 export function yearTick(stat) {
-  stat.时空.学年 = clamp((stat.时空.学年 ?? 1) + 1, 1, 7);
+  stat.时空.学年 = clampSched((stat.时空.学年 ?? 1) + 1, 1, 7);
   stat.时空.周 = 1;
   for (const k of Object.keys(stat.五维)) if (stat.五维[k]) stat.五维[k].本年已得 = 0;
   return stat.时空.学年;

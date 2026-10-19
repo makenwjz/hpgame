@@ -8,13 +8,13 @@ export const RANK_GATES = { 3: 3, 6: 4, 9: 5 };
 export const RANK10_MIN_AXES = 3;
 export const RANK10_MIN_TIER = 4;
 
-export function clamp(v, a, b) { return Math.min(Math.max(v, a), b); }
+export function clampAff(v, a, b) { return Math.min(Math.max(v, a), b); }
 
 /** 单次增减幅度：按 kind 夹取，再夹 ±10 */
 export function clampDelta(kind, delta) {
   const cap = Math.min(KIND_CAP[kind] ?? 5, SINGLE_CAP);
   const d = Number.isFinite(Number(delta)) ? Number(delta) : cap;
-  return clamp(d, -cap, cap);
+  return clampAff(d, -cap, cap);
 }
 
 /** 周内第二次 ×0.5；同 kind 连刷三次起 ×0.7 */
@@ -47,7 +47,7 @@ export function settleAffinity(rel, req, ctx = {}) {
   const before = { rank: rel.rank ?? 1, points: rel.points ?? 0 };
   const raw = clampDelta(req.kind, req.delta);
   const delta = decay(raw, ctx);
-  const points = clamp(before.points + delta, 0, 100);
+  const points = clampAff(before.points + delta, 0, 100);
   let rank = before.rank;
 
   const want = Math.min(10, 1 + Math.floor(points / 10));
