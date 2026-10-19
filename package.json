@@ -8,7 +8,8 @@
     "gen": "node tools/gen-entries.mjs",
     "build": "node tools/gen-entries.mjs && node tools/build-card.mjs",
     "check": "node tools/check-paths.mjs && node tools/check-contract.mjs && node tools/check-names.mjs",
-    "all": "npm run build && npm run check"
+    "test": "node tools/test-rules.mjs",
+    "all": "npm run build && npm run test && npm run check"
   },
   "engines": { "node": ">=18" }
 }

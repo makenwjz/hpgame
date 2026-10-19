@@ -129,7 +129,22 @@ export const WHITELIST = ROOT_KEYS.map(k => `/${k}`);
 
 export function isAllowedPath(p) {
   if (typeof p !== 'string' || !p.startsWith('/')) return false;
-  return WHITELIST.some(w => p === w || p.startsWith(w + '/'));
+  if (!WHITELIST.some(w => p === w || p.startsWith(w + '/'))) return false;
+  return isLegalKeyedPath(p);
+}
+
+// 记录类容器的键必须是「规范名」，不是带空格/中文 rank 的伪键（v10.1 幽灵键的根因）
+export function isLegalPersonKey(k) {
+  if (!k) return false;
+  if (/\\s/.test(k)) return false;
+  if (/rank/i.test(k)) return false;
+  return k.length <= 12;
+}
+export function isLegalKeyedPath(p) {
+  const seg = p.split('/').filter(Boolean);
+  if (seg[0] === '关系' && seg[1]) return isLegalPersonKey(seg[1]);
+  if (seg[0] === '网' && seg[1]) return /^[^\\s]+▸[^\\s]+$/.test(seg[1]);
+  return true;
 }
 
 /** 过滤一段 JSONPatch：丢弃非法路径，返回 {patch, dropped} */
