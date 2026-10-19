@@ -1,0 +1,28 @@
+# 依赖与构建产物
+node_modules/
+dist/
+*.log
+
+# 采集/逆向临时
+_tmp*/
+out/
+screens/
+frames/
+
+# 敏感
+.env
+.env.*
+*.pem
+# 设计文档（只收设计目录与解析报告）
+!cards/HP-Reverb/设计/
+!cards/HP-Reverb/设计/**
+!cards/HP-Reverb/解析报告-v10.1.md
+!cards/HP-Reverb/进度.md
+
+# 只读证据与旧工程不收录
+_card_parse/
+cards/HP-Reverb/design-spec.md
+cards/HP-Reverb/重构方案-v10.1.md
+cards/HP-Reverb/Persona化重构设计.md
+remote-access/
+st/
