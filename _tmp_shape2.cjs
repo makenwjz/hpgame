@@ -1,0 +1,12 @@
+const fs=require('fs');
+const j=JSON.parse(fs.readFileSync('_card_parse/hp_v10.1/source/card.json','utf8'));
+const d=j.data;
+const s=d.extensions.tavern_helper.scripts[0];
+console.log('script full keys:', JSON.stringify(s,null,1).slice(0,1200));
+console.log('\n=== entry extensions 全量 ===');
+const e=d.character_book.entries[0];
+console.log(JSON.stringify(e.extensions,null,1));
+console.log('\n=== 顶层字段 ===');
+console.log(Object.keys(j));
+console.log('\n=== depth_prompt ===', JSON.stringify(d.extensions.depth_prompt));
+console.log('=== fav/talkativeness ===', d.fav, d.talkativeness);

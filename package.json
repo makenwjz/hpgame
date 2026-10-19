@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "哈莉·波特·行间 —— SillyTavern 角色卡与像素宫殿",
   "scripts": {
     "gen": "node tools/gen-entries.mjs",
-    "build": "node tools/gen-entries.mjs && node tools/build-card.mjs && node tools/build-dist.mjs",
+    "card": "node tools/build-card.mjs",
+    "dist": "node tools/build-dist.mjs",
+    "png": "node tools/pack-png.mjs",
+    "build": "npm run gen && npm run card && npm run dist && npm run png",
     "check": "node tools/check-paths.mjs && node tools/check-contract.mjs && node tools/check-names.mjs",
     "test": "node tools/test-rules.mjs",
     "all": "npm run build && npm run test && npm run check"

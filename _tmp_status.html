@@ -1,0 +1,1025 @@
+```html
+<!DOCTYPE html>
+<!-- Cardwright skeleton 1.1.0 · gilded · body -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>/* Cardwright 多主题样式 · 结构基线与五套主题令牌
+   进度值由 JS 内联给：.cw-gauge-fill 不写 stroke-dasharray、.cw-bar-fill 不写 width、.cw-levels 不写列数。
+   全部视觉值走令牌；主题只覆盖令牌，不改布局、不加外链。 */
+
+/* ── 令牌：默认＝心之怪盗（p5）── */
+:root{
+  --bg:#08080a;--panel:#101012;--panel-2:#1a1a1e;
+  --text:#f7f7f8;--text-2:#c8c8d0;--text-3:#8b8b95;--text-para:#f5f5f5;
+  --accent:#e60012;--accent-2:#d0021b;--on-accent:#fff;
+  --line:#fff;--line-soft:rgba(255,255,255,.24);--line-strong:#e60012;
+  --ok:#4fd07a;--warn:#f7d51d;--danger:#ff2a35;
+  --paper:#f4f4f4;--ink:#08080a;
+  --track:#000;--field-bg:#0c0c0e;
+  --tint-1:rgba(230,0,18,.12);--tint-2:rgba(230,0,18,.45);--tint-3:rgba(230,0,18,.1);--tint-4:rgba(230,0,18,.55);--tint-5:rgba(230,0,18,.4);--tint-danger:rgba(255,42,53,.35);
+  --gauge-track:#232323;
+  --dot:radial-gradient(rgba(255,255,255,.17) 1px,transparent 1.2px);
+  --bg-wash:linear-gradient(180deg,var(--tint-3),transparent 170px);
+  --level-wash:linear-gradient(90deg,var(--tint-1),transparent 72%);
+  --title-bar:linear-gradient(90deg,var(--accent) 0 5px,var(--paper) 5px);
+  --scene-rule:repeating-linear-gradient(115deg,var(--accent) 0 8px,transparent 8px 16px);
+  --start-rule:repeating-linear-gradient(-45deg,var(--tint-4) 0 6px,transparent 6px 12px);
+  --serif:"Noto Serif SC","Source Han Serif SC","STZhongsong",SimSun,serif;
+  --sans:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+  --mono:"Cascadia Mono",Consolas,"Sarasa Mono SC",monospace;
+  --display:"Arial Black",Impact,"Microsoft YaHei UI",sans-serif;
+  --radius:0px;--radius-avatar:0px;
+  --cut:6px;--cut-lg:9px;--cut-title:10px;--cut-tab:7px;--cut-bar:5px;--cut-sm:4px;--cut-xs:3px;
+  --skew:-8deg;--skew-sm:-6deg;--skew-xs:-12deg;--tilt:-1.2deg;
+  --shadow:4px 4px 0 #000;--shadow-lg:6px 6px 0 #000;--shadow-md:5px 5px 0 #000;--shadow-sm:3px 3px 0 #000;
+  --shadow-danger:4px 4px 0 var(--tint-danger);--shadow-danger-sm:3px 3px 0 var(--tint-danger);--shadow-accent:3px 3px 0 var(--tint-5);
+  --corner:16px;--dot-op:.4;--block-anim:cw-p5-in 120ms ease-out both;
+  --status-lead:6px;--status-bar-h:4px;--status-veil:30px;
+}
+
+/* ── 主题：镀金（还原卡的原皮：深林绿 + 古金 + 羊皮纸米色）── */
+:root[data-cw-theme="gilded"]{
+  --bg:#141a14;--panel:#19211a;--panel-2:#1f2a20;
+  --text:#efe6d2;--text-2:#b8a98a;--text-3:#94896f;--text-para:#efe6d2;
+  --accent:#d9bb7a;--accent-2:#b8955a;--on-accent:#141a14;
+  --line:#d9bb7a;--line-soft:rgba(184,149,90,.22);--line-strong:#b8955a;
+  --ok:#7fae7a;--warn:#d9a441;--danger:#cd6960;
+  --paper:#efe6d2;--ink:#141a14;
+  --track:#0e120e;--field-bg:#101610;
+  --tint-1:rgba(184,149,90,.14);--tint-2:rgba(184,149,90,.3);--tint-3:rgba(184,149,90,.1);--tint-4:rgba(184,149,90,.35);--tint-5:rgba(184,149,90,.25);--tint-danger:rgba(200,88,79,.35);
+  --gauge-track:#0a0a0a;
+  --dot:none;
+  --bg-wash:none;--level-wash:linear-gradient(90deg,var(--tint-1),transparent 72%);
+  --title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);--scene-rule:repeating-linear-gradient(115deg,var(--line-soft) 0 8px,transparent 8px 16px);
+  --start-rule:none;
+  --display:"Sitka Banner",Georgia,"Times New Roman","Noto Serif SC",serif;
+  --radius:2px;--radius-avatar:2px;
+  --cut:0px;--cut-lg:0px;--cut-title:0px;--cut-tab:0px;--cut-bar:0px;--cut-sm:0px;--cut-xs:0px;
+  --skew:0deg;--skew-sm:0deg;--skew-xs:0deg;--tilt:0deg;
+  --shadow:none;--shadow-lg:none;--shadow-md:none;--shadow-sm:none;
+  --shadow-danger:none;--shadow-danger-sm:none;--shadow-accent:none;
+  --corner:0px;--dot-op:0;--block-anim:none;
+  --status-lead:1px;--status-bar-h:0px;--status-veil:0px;
+}
+
+/* ── 主题：羊皮纸（霍格沃茨课业：纸底、墨色、衬线、红蜡封）── */
+:root[data-cw-theme="hogwarts"]{
+  --bg:#efe4cf;--panel:#f8f1e2;--panel-2:#eadfc7;
+  --text:#2b241c;--text-2:#5c4f3e;--text-3:#6e6250;--text-para:#2b241c;
+  --accent:#8c2c21;--accent-2:#a63a2c;--on-accent:#fbf5e8;
+  --line:#8c7a5c;--line-soft:rgba(90,74,50,.28);--line-strong:#8c2c21;
+  --ok:#3f6b3a;--warn:#9a6a12;--danger:#a3291d;
+  --paper:#2b241c;--ink:#f8f1e2;
+  --track:#ded1b6;--field-bg:#fdf8ec;
+  --tint-1:rgba(140,44,33,.09);--tint-2:rgba(140,44,33,.3);--tint-3:rgba(140,44,33,.06);--tint-4:rgba(140,44,33,.4);--tint-5:rgba(140,44,33,.25);--tint-danger:rgba(163,41,29,.3);
+  --gauge-track:#dddddd;
+  --dot:none;
+  --bg-wash:linear-gradient(180deg,var(--tint-3),transparent 200px);
+  --level-wash:linear-gradient(90deg,var(--tint-1),transparent 74%);
+  --title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);
+  --scene-rule:repeating-linear-gradient(115deg,var(--line-soft) 0 6px,transparent 6px 12px);
+  --start-rule:none;
+  --serif:"Noto Serif SC","Source Han Serif SC","STZhongsong",SimSun,serif;
+  --sans:"Noto Serif SC","Source Han Serif SC","STZhongsong",SimSun,serif;
+  --display:"Sitka Banner",Georgia,"Noto Serif SC",serif;
+  --radius:3px;--radius-avatar:50%;
+  --cut:0px;--cut-lg:0px;--cut-title:0px;--cut-tab:0px;--cut-bar:0px;--cut-sm:0px;--cut-xs:0px;
+  --skew:0deg;--skew-sm:0deg;--skew-xs:0deg;--tilt:0deg;
+  --shadow:none;--shadow-lg:none;--shadow-md:none;--shadow-sm:none;
+  --shadow-danger:none;--shadow-danger-sm:none;--shadow-accent:none;
+  --corner:0px;--dot-op:0;--block-anim:none;
+  --status-lead:4px;--status-bar-h:3px;--status-veil:0px;
+}
+
+/* ── 主题：夜航（深蓝紫、微光、月）── */
+:root[data-cw-theme="night"]{
+  --bg:#070a17;--panel:#0e1428;--panel-2:#151c34;
+  --text:#e8ecff;--text-2:#a9b3d8;--text-3:#7a82a0;--text-para:#e3e8ff;
+  --accent:#7c8cff;--accent-2:#9f7cff;--on-accent:#080c1c;
+  --line:#c9d3ff;--line-soft:rgba(160,175,255,.26);--line-strong:#9f7cff;
+  --ok:#5fd0a8;--warn:#f0d066;--danger:#ff5f7e;
+  --paper:#dfe6ff;--ink:#080c1c;
+  --track:#050814;--field-bg:#0a0f22;
+  --tint-1:rgba(124,140,255,.14);--tint-2:rgba(159,124,255,.42);--tint-3:rgba(124,140,255,.1);--tint-4:rgba(159,124,255,.5);--tint-5:rgba(124,140,255,.4);--tint-danger:rgba(255,95,126,.4);
+  --gauge-track:#262626;
+  --dot:radial-gradient(rgba(190,205,255,.2) 1px,transparent 1.3px);
+  --bg-wash:radial-gradient(120% 60% at 50% 0,rgba(124,140,255,.18),transparent 70%);
+  --level-wash:linear-gradient(90deg,rgba(124,140,255,.14),transparent 74%);
+  --title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);
+  --scene-rule:repeating-linear-gradient(115deg,var(--accent) 0 5px,transparent 5px 12px);
+  --start-rule:repeating-linear-gradient(-45deg,rgba(159,124,255,.4) 0 5px,transparent 5px 11px);
+  --display:"Segoe UI Semibold","Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;
+  --radius:12px;--radius-avatar:50%;
+  --cut:0px;--cut-lg:0px;--cut-title:0px;--cut-tab:0px;--cut-bar:6px;--cut-sm:0px;--cut-xs:0px;
+  --skew:0deg;--skew-sm:0deg;--skew-xs:0deg;--tilt:0deg;
+  --shadow:0 2px 18px rgba(90,110,255,.28);
+  --shadow-lg:0 4px 26px rgba(120,140,255,.34);
+  --shadow-md:0 3px 20px rgba(120,140,255,.3);
+  --shadow-sm:0 2px 12px rgba(120,140,255,.24);
+  --shadow-danger:0 2px 14px rgba(255,95,126,.35);--shadow-danger-sm:0 2px 14px rgba(255,95,126,.35);
+  --shadow-accent:0 2px 14px rgba(124,140,255,.45);
+  --corner:0px;--dot-op:.5;--block-anim:cw-p5-in 160ms ease-out both;
+  --status-lead:3px;--status-bar-h:3px;--status-veil:34px;
+}
+
+/* ── 主题：学院随色（跟随 /主角/学院，分院一落定就换色）── */
+:root[data-cw-theme="house"]{
+  /* 未分院时的中立色：分院仪式一落定就换成院色 */
+  --bg:#0b0c0e;--panel:#14161a;--panel-2:#1c1f24;
+  --text:#eef0f3;--text-2:#a8aeb8;--text-3:#7e838c;--text-para:#eef0f3;
+  --accent:#8a8f98;--accent-2:#6b7078;--on-accent:#0b0c0e;--line:#c3c8d0;--line-soft:rgba(195,200,208,.24);--line-strong:#6b7078;
+  --track:#08090b;--field-bg:#101214;
+  --tint-1:rgba(138,143,152,.14);--tint-2:rgba(138,143,152,.4);--tint-3:rgba(138,143,152,.1);--tint-4:rgba(138,143,152,.45);--tint-5:rgba(138,143,152,.35);--tint-danger:rgba(255,60,80,.4);
+  --gauge-track:#272727;
+  --bg-wash:linear-gradient(180deg,var(--tint-3),transparent 180px);
+  --level-wash:linear-gradient(90deg,var(--tint-1),transparent 74%);
+  --title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);--scene-rule:repeating-linear-gradient(115deg,var(--accent) 0 6px,transparent 6px 13px);--start-rule:none;
+  --cut:0px;--cut-lg:0px;--cut-title:0px;--cut-tab:0px;--cut-bar:4px;--cut-sm:0px;--cut-xs:0px;
+  --skew:0deg;--skew-sm:0deg;--skew-xs:0deg;--tilt:0deg;
+  --radius:8px;--radius-avatar:50%;
+  --shadow:0 2px 14px rgba(0,0,0,.5);--shadow-lg:0 3px 20px rgba(0,0,0,.55);
+  --shadow-md:0 2px 16px rgba(0,0,0,.5);--shadow-sm:0 1px 10px rgba(0,0,0,.45);
+  --shadow-danger:0 2px 12px rgba(0,0,0,.5);--shadow-danger-sm:0 2px 12px rgba(0,0,0,.5);--shadow-accent:0 2px 12px rgba(0,0,0,.5);
+  --dot:none;--corner:0px;--dot-op:0;--block-anim:cw-p5-in 140ms ease-out both;
+  --tint-danger:rgba(255,60,80,.4);
+  --display:"Segoe UI Semibold","Microsoft YaHei UI",system-ui,sans-serif;
+  --status-lead:5px;--status-bar-h:3px;--status-veil:0px;
+}
+:root[data-cw-theme="house"][data-cw-house="格兰芬多"]{
+  --bg:#0d0406;--panel:#180a0d;--panel-2:#221014;
+  --text:#f7ece6;--text-2:#d4aeb0;--text-3:#9c7376;--text-para:#f7ece6;
+  --accent:#c8102e;--accent-2:#e0b04a;--on-accent:#fff;--line:#e0b04a;--line-soft:rgba(224,176,74,.26);--line-strong:#c8102e;
+  --track:#0a0203;--field-bg:#120507;
+  --tint-1:rgba(200,16,46,.15);--tint-2:rgba(200,16,46,.45);--tint-3:rgba(200,16,46,.1);--tint-4:rgba(200,16,46,.5);--tint-5:rgba(200,16,46,.4);
+  --gauge-track:#bababa;--bg-wash:linear-gradient(180deg,rgba(200,16,46,.14),transparent 180px);
+  --level-wash:linear-gradient(90deg,rgba(200,16,46,.14),transparent 74%);--title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);--scene-rule:repeating-linear-gradient(115deg,var(--accent) 0 6px,transparent 6px 13px);--start-rule:none;
+}
+:root[data-cw-theme="house"][data-cw-house="斯莱特林"]{
+  --bg:#040a07;--panel:#0a1511;--panel-2:#101d18;
+  --text:#e7f2ec;--text-2:#a8c3b6;--text-3:#6f8b7e;--text-para:#e7f2ec;
+  --accent:#2f7d5b;--accent-2:#b9c6c0;--on-accent:#fff;--line:#b9c6c0;--line-soft:rgba(185,198,192,.24);--line-strong:#2f7d5b;
+  --track:#020604;--field-bg:#07100c;
+  --tint-1:rgba(47,125,91,.16);--tint-2:rgba(47,125,91,.45);--tint-3:rgba(47,125,91,.1);--tint-4:rgba(47,125,91,.5);--tint-5:rgba(47,125,91,.4);
+  --gauge-track:#c9c9c9;--bg-wash:linear-gradient(180deg,rgba(47,125,91,.14),transparent 180px);
+  --level-wash:linear-gradient(90deg,rgba(47,125,91,.16),transparent 74%);--title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);--scene-rule:repeating-linear-gradient(115deg,var(--accent) 0 6px,transparent 6px 13px);--start-rule:none;
+}
+:root[data-cw-theme="house"][data-cw-house="拉文克劳"]{
+  --bg:#050812;--panel:#0c1224;--panel-2:#131b33;
+  --text:#e9edfb;--text-2:#adb8d8;--text-3:#757fa3;--text-para:#e9edfb;
+  --accent:#3f73cd;--accent-2:#c08a3e;--on-accent:#fff;--line:#c08a3e;--line-soft:rgba(192,138,62,.26);--line-strong:#3f73cd;
+  --track:#03050d;--field-bg:#080d1b;
+  --tint-1:rgba(74,123,208,.16);--tint-2:rgba(74,123,208,.45);--tint-3:rgba(74,123,208,.1);--tint-4:rgba(74,123,208,.5);--tint-5:rgba(74,123,208,.4);
+  --gauge-track:#252525;--bg-wash:linear-gradient(180deg,rgba(74,123,208,.14),transparent 180px);
+  --level-wash:linear-gradient(90deg,rgba(74,123,208,.16),transparent 74%);--title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);--scene-rule:repeating-linear-gradient(115deg,var(--accent) 0 6px,transparent 6px 13px);--start-rule:none;
+}
+:root[data-cw-theme="house"][data-cw-house="赫奇帕奇"]{
+  --bg:#0d0a04;--panel:#191307;--panel-2:#241c0c;
+  --text:#fbf3e0;--text-2:#d3bd90;--text-3:#9b8659;--text-para:#fbf3e0;
+  --accent:#d9a521;--accent-2:#8a6a3a;--on-accent:#1a1305;--line:#8a6a3a;--line-soft:rgba(138,106,58,.3);--line-strong:#d9a521;
+  --track:#0a0702;--field-bg:#120d05;
+  --tint-1:rgba(217,165,33,.16);--tint-2:rgba(217,165,33,.42);--tint-3:rgba(217,165,33,.1);--tint-4:rgba(217,165,33,.48);--tint-5:rgba(217,165,33,.4);
+  --gauge-track:#272727;--bg-wash:linear-gradient(180deg,rgba(217,165,33,.13),transparent 180px);
+  --level-wash:linear-gradient(90deg,rgba(217,165,33,.16),transparent 74%);--title-bar:linear-gradient(90deg,var(--accent) 0 4px,var(--paper) 4px);--scene-rule:repeating-linear-gradient(115deg,var(--accent) 0 6px,transparent 6px 13px);--start-rule:none;
+}
+
+/* ── 基线 ── */
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 var(--sans);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.md{min-width:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.cw-app { max-width: 720px; margin: 0 auto; padding: 12px 16px; }
+.cw-app>*{min-width:0}
+.cw-app.is-body{background-image:var(--bg-wash)}
+.cw-app.is-start{padding-top:18px}
+.cw-icon{width:15px;height:15px;flex:none}
+
+/* ── 状态栏：主色框 + 顶部色条 + 网点舞台 ── */
+.cw-status{position:relative;overflow:hidden;border:2px solid var(--accent);border-left-width:var(--status-lead);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow)}
+.cw-status::before{content:'';display:block;height:var(--status-bar-h);background:var(--accent)}
+.cw-status::after{content:'';position:absolute;left:0;right:0;top:var(--status-bar-h);height:var(--status-veil);background-image:var(--dot);background-size:6px 6px;opacity:var(--dot-op);pointer-events:none}
+.cw-status>*{position:relative;z-index:1}
+.cw-status-bar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;min-height:40px;padding:8px 12px;border-bottom:2px solid var(--line-soft)}
+.cw-status.is-collapsed .cw-status-bar{border-bottom:0}
+.cw-status-title{flex:none;padding:3px 12px 4px 9px;background:var(--accent);color:var(--on-accent);font:900 13px/1.25 var(--display);letter-spacing:.1em;clip-path:polygon(0 0,100% 0,calc(100% - var(--cut-lg)) 100%,0 100%)}
+.cw-summary{display:flex;flex:1 1 auto;flex-wrap:wrap;gap:2px 14px;min-width:0;font-size:12.5px;color:var(--text-2)}
+.cw-summary-item b{margin-right:5px}
+.cw-summary-item b,.cw-field b,.cw-delta-item b{font-weight:400;color:var(--text-3)}
+.cw-tabs{display:flex;flex-wrap:wrap;gap:3px;padding:7px 8px 0;border-bottom:2px solid var(--line-soft);background:var(--panel-2)}
+.cw-tab{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:2px 14px;border:0;background:none;color:var(--text-2);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;clip-path:polygon(var(--cut-tab) 0,100% 0,calc(100% - var(--cut-tab)) 100%,0 100%)}
+.cw-tab.is-on{background:var(--accent);color:var(--on-accent)}
+.cw-page{display:grid;gap:14px;padding:14px 12px}
+
+/* 区块：主色左脊 + 右上角标 + 纸色标签条 */
+.cw-block{position:relative;min-width:0;padding:10px 12px 12px;border:2px solid var(--line-soft);border-left:4px solid var(--accent);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow);animation:var(--block-anim)}
+.cw-block::before{content:'';position:absolute;right:0;top:0;width:var(--corner);height:var(--corner);background:var(--accent);clip-path:polygon(100% 0,100% 100%,0 0)}
+.cw-fold .cw-block{padding:6px 0 2px 10px;border:0;border-left:3px solid var(--line-soft);border-radius:0;background:none;box-shadow:none;animation:none}
+.cw-fold .cw-block::before{display:none}
+.cw-block-title{display:inline-block;margin:0 0 9px;padding:3px 14px 4px 9px;background:var(--title-bar);color:var(--ink);font:900 12px/1.3 var(--display);letter-spacing:.12em;clip-path:polygon(0 0,100% 0,calc(100% - var(--cut-title)) 100%,0 100%)}
+.cw-custom{min-width:0}
+.cw-text{margin:0}
+.cw-empty{margin:0;color:var(--text-3)}
+
+/* ── 数值 / 进度条 / 圆环 ── */
+.cw-stats-grid{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:5px 12px;margin:0}
+.cw-stats-grid dt{color:var(--text-3);font-size:12.5px}
+.cw-stats-grid dd{margin:0;min-width:0;border-bottom:1px dotted var(--line-soft)}
+.cw-value{font-weight:700}
+.cw-value.is-missing,.cw-bar-value.is-missing{color:var(--text-3);font-weight:400}
+.cw-bar{display:flex;align-items:center;gap:10px}
+.cw-bar+.cw-bar{margin-top:8px}
+.cw-bar-label{flex:none;font-size:12.5px;font-weight:700;color:var(--text-2)}
+.cw-bar-track{position:relative;flex:1 1 auto;min-width:40px;height:9px;border-radius:var(--radius);background:var(--track);border:1px solid var(--line-soft);overflow:hidden;clip-path:polygon(0 0,100% 0,calc(100% - var(--cut-bar)) 100%,0 100%)}
+.cw-bar-fill{display:block;height:100%;background:var(--accent);transition:width 120ms linear}
+.cw-bar-value{flex:none;min-width:3em;text-align:right;font-size:12.5px;font-weight:700}
+.cw-gauge-row{display:flex;flex-wrap:wrap;gap:12px}
+.cw-gauge-item{flex:1 1 21%;min-width:72px;margin:0;text-align:center}
+.cw-gauge{width:100%;max-width:96px;height:auto}
+.cw-gauge-track,.cw-gauge-fill{fill:none;stroke-width:6;stroke-linecap:butt}
+.cw-gauge-track{stroke:var(--gauge-track)}
+.cw-gauge-fill{stroke:var(--accent)}
+.cw-gauge-item figcaption{display:grid;font-size:12px;color:var(--text-3)}
+.cw-gauge-item figcaption b{font-size:15px;font-weight:900;color:var(--text)}
+
+/* 纸片贴纸：标签 / 档位 */
+.cw-tags,.cw-tiers{display:flex;flex-wrap:wrap;gap:7px}
+.cw-tag,.cw-tier{padding:2px 10px 3px;border:1px solid var(--line-soft);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-size:12px;font-weight:700;clip-path:polygon(var(--cut-sm) 0,100% 0,calc(100% - var(--cut-sm)) 100%,0 100%)}
+.cw-tag:nth-child(even),.cw-tier:nth-child(even){transform:rotate(var(--tilt))}
+.cw-tier{opacity:.75}
+.cw-tier.is-ok{background:var(--ok)}
+.cw-tier.is-warn{background:var(--warn)}
+.cw-tier.is-danger{background:var(--danger)}
+.cw-tier.is-accent{background:var(--accent);color:var(--on-accent)}
+.cw-tier.is-current{opacity:1;font-weight:900;box-shadow:inset 0 -4px 0 var(--ink)}
+
+/* ── 名单 / 字段 / 关系 / 时间轴 / 增量 ── */
+.cw-list{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+.cw-list li{position:relative;min-width:0;padding-left:14px}
+.cw-list li::before{content:'';position:absolute;left:0;top:.6em;width:7px;height:7px;background:var(--accent);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.cw-field{display:inline-flex;gap:5px;margin-right:12px;font-size:12.5px}
+.cw-relations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cw-relation{display:flex;gap:10px;min-width:0;padding:9px 10px;border:2px solid var(--line-soft);border-left:4px solid var(--accent);border-radius:var(--radius);background:var(--panel-2)}
+.cw-avatar{flex:none;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:var(--radius-avatar);background:hsl(var(--hue,0) 62% 52%);color:var(--ink);font:900 15px/1 var(--display);clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)}
+:root[data-cw-theme="gilded"] .cw-avatar,:root[data-cw-theme="hogwarts"] .cw-avatar,:root[data-cw-theme="night"] .cw-avatar,:root[data-cw-theme="house"] .cw-avatar{clip-path:none}
+.cw-relation-body{display:grid;gap:4px;flex:1 1 auto;min-width:0}
+.cw-relation-name{font-size:14px;font-weight:800;line-height:1.3}
+.cw-relation-fields{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12px;color:var(--text-2)}
+.cw-relation .cw-field{margin:0;font-size:12px}
+.cw-relation .cw-bar-track{height:6px}
+.cw-timeline{display:grid;gap:8px;margin:0;padding:0 0 0 16px;list-style:none;border-left:2px solid var(--line-soft)}
+.cw-timeline li{position:relative;min-width:0;font-size:13px}
+.cw-timeline li::before{content:'';position:absolute;left:-21px;top:.5em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+.cw-timeline time{display:block;font-size:11px;color:var(--text-3)}
+.cw-delta-item{display:inline-flex;align-items:baseline;gap:6px;margin-right:14px;font-size:13px}
+.cw-delta{font-weight:900}
+.cw-delta.is-up{color:var(--ok)}
+.cw-delta.is-down{color:var(--danger)}
+.cw-delta.is-same{color:var(--text-2);font-weight:400}
+
+/* ── 折叠板 / 报错面板 / 主题面板 ── */
+.cw-fold{min-width:0;border:2px solid var(--line-soft);border-left:4px solid var(--accent);border-radius:var(--radius);background:var(--panel-2)}
+.cw-fold summary{display:flex;align-items:center;gap:7px;min-height:36px;padding:5px 12px;color:var(--text-2);font-size:13px;font-weight:700;cursor:pointer;list-style:none}
+.cw-fold summary::before{content:'';flex:none;width:8px;height:8px;background:var(--accent);clip-path:polygon(0 0,100% 50%,0 100%)}
+.cw-fold[open] summary::before{transform:rotate(90deg)}
+.cw-fold>:not(summary){margin:8px 0 10px;padding:0 12px}
+.cw-rosters{display:grid;gap:8px}
+.cw-roster{min-width:0;border:2px solid var(--line-soft);border-left:4px solid var(--accent);border-radius:var(--radius);background:var(--panel-2)}
+.cw-roster>summary{display:flex;align-items:center;gap:9px;min-height:40px;padding:5px 12px;cursor:pointer;list-style:none}
+.cw-roster>summary::-webkit-details-marker{display:none}
+.cw-roster>summary::before{content:'';flex:none;width:8px;height:8px;background:var(--accent);clip-path:polygon(0 0,100% 50%,0 100%)}
+.cw-roster[open]>summary::before{transform:rotate(90deg)}
+.cw-roster-name{flex:0 1 auto;min-width:0;overflow:hidden;font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;text-overflow:ellipsis}
+.cw-roster-bar{flex:1 1 60px;min-width:40px}
+.cw-roster-bar .cw-bar-track{height:6px}
+.cw-roster-fav{flex:none;min-width:2.6em;text-align:right;font-size:12.5px;font-weight:800;color:var(--text-2)}
+.cw-roster-body{display:grid;gap:8px;margin:0 0 10px;padding:0 12px}
+.cw-roster-fields{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:12.5px;color:var(--text-2)}
+.cw-roster-fields.is-intimate{padding-top:8px;border-top:1px dashed var(--line-soft)}
+.cw-roster .cw-field{margin:0;font-size:12.5px}
+.cw-locked{margin:0;padding-top:8px;border-top:1px dashed var(--line-soft);font-size:12px;color:var(--text-3)}
+.cw-locked.is-open{color:var(--text-2)}
+.cw-error{margin:10px 0;padding:10px 12px;border:2px solid var(--danger);border-left-width:var(--status-lead);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow-danger)}
+.cw-error b{display:block;color:var(--danger);font-weight:900}
+.cw-error p{margin:5px 0 9px;font-size:13px;color:var(--text-2)}
+.cw-skins{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.cw-skin{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:3px 12px;border:2px solid var(--line-soft);border-radius:var(--radius);background:var(--panel-2);color:var(--text-2);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;clip-path:polygon(var(--cut-sm) 0,100% 0,calc(100% - var(--cut-sm)) 100%,0 100%)}
+.cw-skin[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.cw-skin-swatch{flex:none;width:11px;height:11px;border-radius:50%;background:var(--sw,#888);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.cw-skin-note{margin:7px 0 0;font-size:11.5px;color:var(--text-3)}
+
+/* ── 正文美化：外壳张扬，正文克制（.cw-para 是阅读主体）── */
+.cw-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;margin:0 0 16px;padding:6px 10px 7px;border-bottom:3px solid var(--line);border-left:5px solid var(--accent);color:var(--text-2);font-size:12px;font-weight:700;letter-spacing:.1em}
+.cw-chapter{margin:26px 0 12px;padding:5px 14px 6px;background:var(--accent);color:var(--on-accent);font:900 18px/1.35 var(--display);letter-spacing:.1em;transform:skewX(var(--skew));box-shadow:var(--shadow-lg);overflow-wrap:anywhere}
+.cw-para{margin:11px 0;color:var(--text-para);font-size:15.5px;line-height:1.85;text-align:justify;white-space:pre-wrap;overflow-wrap:anywhere}
+.cw-say{display:flex;gap:9px;margin:11px 0;padding:5px 0 5px 12px;border-left:5px solid var(--line-soft);overflow-wrap:anywhere}
+.cw-say q{flex:1 1 auto;min-width:0;quotes:'「' '」'}
+.cw-speaker{flex:none;align-self:flex-start;padding:1px 9px 2px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:900;clip-path:polygon(0 0,100% 0,calc(100% - var(--cut)) 100%,0 100%)}
+.cw-say.is-player{border-left-color:var(--accent);background:var(--tint-1)}
+.cw-say.is-player .cw-speaker{background:var(--accent);color:var(--on-accent)}
+.cw-mono{margin:12px 0;padding:5px 0 5px 12px;border-left:5px double var(--line-soft);color:var(--text-2);font-size:15px;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere}
+.cw-scene{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-3);font-family:var(--serif);font-size:13px;overflow-wrap:anywhere}
+.cw-scene::before,.cw-scene::after{content:'';flex:1 1 auto;height:3px;background:var(--scene-rule)}
+.cw-tip{margin:14px 0;padding:9px 12px;border:2px solid var(--warn);border-left-width:8px;border-radius:var(--radius);background:var(--panel-2);color:var(--text-2);font-size:13px;line-height:1.75;box-shadow:var(--shadow-sm)}
+.cw-check{margin:15px 0;padding:9px 12px;border:3px solid var(--accent);border-radius:var(--radius);background:var(--track);color:var(--text);font-family:var(--mono);font-size:13px;font-weight:700;line-height:1.75;box-shadow:4px 4px 0 var(--tint-2);overflow-wrap:anywhere}
+.cw-fallback>:first-child{margin-top:0}
+
+/* ── 创角页 ── */
+.cw-start{position:relative;max-width:520px;margin:0 auto;padding:18px 16px 22px;border:2px solid var(--line-soft);border-top:6px solid var(--accent);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow-lg)}
+.cw-start::before{content:'';position:absolute;left:0;right:0;top:0;height:11px;background:var(--start-rule)}
+.cw-start-body{min-width:0}
+.cw-title{margin:0 0 16px;padding:6px 14px 7px;background:var(--accent);color:var(--on-accent);font:900 21px/1.35 var(--display);letter-spacing:.12em;text-align:center;transform:skewX(var(--skew));box-shadow:var(--shadow-md);overflow-wrap:anywhere}
+.cw-steps{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin:0 0 18px;padding:0;list-style:none;counter-reset:cw-step;font-size:12px;color:var(--text-3)}
+.cw-step{display:inline-flex;align-items:center;gap:5px;min-height:24px;font-weight:700}
+.cw-step::before{counter-increment:cw-step;content:counter(cw-step);display:inline-grid;place-items:center;width:20px;height:20px;border:2px solid var(--line-soft);border-radius:var(--radius-avatar);font-size:11px;font-weight:900;transform:skewX(var(--skew-sm))}
+.cw-step.is-current{color:var(--text)}
+.cw-step.is-current::before{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.cw-step.is-done{color:var(--text-2)}
+.cw-step.is-done::before{content:'✓';border-color:var(--text-2);color:var(--text-2)}
+.cw-field-row{margin:0 0 14px;min-width:0}
+.cw-field-label{display:flex;align-items:baseline;gap:5px;margin-bottom:6px;color:var(--text-2);font-size:13px;font-weight:700}
+.cw-field-label::before{content:'';flex:none;width:4px;height:12px;background:var(--accent);transform:skewX(var(--skew-xs))}
+.cw-required{margin-left:2px;font-style:normal;font-weight:900;color:var(--accent)}
+.cw-input{width:100%;min-height:42px;padding:7px 11px;border:2px solid var(--line-soft);border-radius:var(--radius);background:var(--field-bg);color:var(--text);font:inherit;font-size:14px;transition:border-color 120ms linear,box-shadow 120ms linear}
+.cw-input::placeholder{color:var(--text-3)}
+.cw-input:focus{border-color:var(--accent);box-shadow:var(--shadow-accent)}
+.cw-textarea{min-height:90px;resize:vertical;line-height:1.75}
+.cw-choices{display:flex;flex-wrap:wrap;gap:8px}
+.cw-choice{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:4px 14px;border:2px solid var(--line-soft);border-radius:var(--radius);background:var(--panel-2);color:var(--text-2);font-size:13px;font-weight:700;cursor:pointer;clip-path:polygon(var(--cut) 0,100% 0,calc(100% - var(--cut)) 100%,0 100%)}
+.cw-choice input{flex:none;margin:0;accent-color:var(--accent)}
+.cw-choice.is-on{background:var(--accent);color:var(--on-accent);font-weight:900}
+.cw-slider{width:100%;max-width:320px;min-height:42px;margin:0;accent-color:var(--accent)}
+.cw-slider-value{display:inline-block;min-width:3em;margin-left:10px;padding:2px 8px 3px;border:2px solid var(--accent);border-radius:var(--radius);background:var(--track);color:var(--text);font-weight:900;text-align:center}
+.cw-field-row.is-invalid .cw-field-label{color:var(--danger)}
+.cw-field-row.is-invalid .cw-input,.cw-field-row.is-invalid .cw-choice,.cw-field-row.is-invalid .cw-slider{border-color:var(--danger);box-shadow:var(--shadow-danger-sm)}
+.cw-start-nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.cw-toggle,.cw-btn{min-height:38px;padding:5px 16px;border:0;border-radius:var(--radius);background:var(--paper);color:var(--ink);font:900 13px/1.2 var(--sans);cursor:pointer;clip-path:polygon(var(--cut-tab) 0,100% 0,calc(100% - var(--cut-tab)) 100%,0 100%)}
+.cw-toggle{flex:none;margin-left:auto}
+.cw-btn{min-width:104px}
+.cw-btn:disabled{opacity:.42;cursor:default}
+.cw-btn.is-primary,.cw-btn.is-primary:hover{background:var(--accent);color:var(--on-accent)}
+.cw-review{display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 14px;margin:0;font-size:14px}
+.cw-review dt{padding-left:7px;border-left:3px solid var(--accent);color:var(--text-2);font-weight:700}
+.cw-review dd{margin:0;min-width:0;font-weight:700;overflow-wrap:anywhere}
+.cw-review dd.is-missing{color:var(--text-3);font-weight:400}
+.cw-done{display:grid;gap:10px;justify-items:center;padding:16px 0;text-align:center}
+.cw-done b{padding:5px 16px 6px;background:var(--accent);color:var(--on-accent);font:900 18px/1.35 var(--display);letter-spacing:.1em;transform:skewX(var(--skew));box-shadow:var(--shadow)}
+.cw-done p{margin:0;color:var(--text-2)}
+.cw-done ul{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:13px;color:var(--text-2)}
+
+/* ── 交互三态：过渡一律 120ms，reduced-motion 下全关 ── */
+.cw-tab:hover,.cw-choice:hover,.cw-input:hover,.cw-fold summary:hover,.cw-skin:hover{color:var(--text);border-color:var(--accent)}
+.cw-toggle:hover,.cw-btn:hover{background:var(--accent);color:var(--on-accent)}
+.cw-tab:active,.cw-toggle:active,.cw-btn:active,.cw-choice:active,.cw-skin:active{transform:translateY(2px)}
+.cw-tab,.cw-toggle,.cw-btn,.cw-choice,.cw-skin{transition:background-color 120ms linear,color 120ms linear,border-color 120ms linear,transform 120ms linear}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+
+/* ── 学科进度：列数由 JS 内联给；中文课名与成语档都不截断 ── */
+.cw-levels{display:grid;gap:7px 18px;margin:0;min-width:0}
+.cw-level{display:grid;grid-template-columns:minmax(4.6em,7.2em) minmax(24px,1fr) auto auto;align-items:center;gap:4px 8px;min-width:0;padding:3px 0 3px 9px;border-left:3px solid var(--accent);border-radius:var(--radius);background:var(--level-wash)}
+.cw-level-name,.cw-level-label{font-size:12.5px;font-weight:700;color:var(--text);white-space:nowrap}
+.cw-level .cw-bar-track{height:7px}
+.cw-level-value{min-width:2.2em;text-align:right;font-size:12.5px;font-weight:900;white-space:nowrap}
+.cw-level-tier{padding:1px 7px 2px;border-radius:var(--radius);background:var(--paper);color:var(--ink);font-size:11.5px;font-weight:700;white-space:nowrap;clip-path:polygon(var(--cut-xs) 0,100% 0,calc(100% - var(--cut-xs)) 100%,0 100%)}
+
+/* ── 主题面板：挂在状态栏标题栏里，占满一行 ── */
+.cw-status-bar .cw-skins{flex:1 1 100%;margin:6px 0 0}
+.cw-skin-btn{margin-left:0}
+
+/* ── 挂载点：三条定位契约原样保留（必须排在媒体查询之前）── */
+.cw-status-head { max-width: 720px; margin: 12px auto 0; padding: 0 16px; }
+.cw-status-head:empty{display:none}
+
+/* 学科窄屏塌成一列（覆盖 JS 内联列数） */
+@media (max-width: 600px) {
+  .cw-levels{grid-template-columns:minmax(0,1fr)!important}
+}
+
+/* 手机档 */
+@media (max-width: 480px) {
+  .cw-app { padding: 10px 12px; }
+  .cw-status-head { padding: 0 12px; }
+  .cw-status-bar{padding:8px 10px}
+  .cw-status-title{padding-right:10px;font-size:12.5px}
+  .cw-stats-grid{grid-template-columns:auto minmax(0,1fr);gap:4px 10px}
+  .cw-relations{grid-template-columns:minmax(0,1fr)}
+  .cw-review{grid-template-columns:minmax(0,1fr);gap:2px}
+  .cw-review dd{margin-bottom:8px}
+  .cw-gauge-item{flex-basis:40%}
+  .cw-page{padding:10px 8px}
+  .cw-tab{padding:4px 12px}
+  .cw-chapter{font-size:16px;transform:skewX(calc(var(--skew) * .625))}
+  .cw-title{font-size:18px}
+  .cw-start{padding:14px 12px 18px}
+  .cw-levels{grid-template-columns:minmax(0,1fr)!important}
+  .cw-skin{padding:3px 9px;font-size:12px}
+}
+
+/* 减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .cw-block{animation:none}
+}
+
+/* 入场：短促弹出（斜切强度随令牌走） */
+@keyframes cw-p5-in{from{opacity:0;transform:translate(-6px,4px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<main id="cw-app" class="cw-app is-body"></main>
+<div id="cw-status-head" class="cw-status-head"></div>
+<textarea id="cw-source" hidden>$1</textarea>
+<script id="cw-sheet" type="application/json">{"kind":"正文美化","preset":"gilded","root":"content","floors":10,"statusHead":{"kind":"状态栏","form":"header","preset":"gilded","title":"哈莉·波特","collapsed":true,"summary":[{"path":"/时空/日期","label":"日期","kind":"文本"},{"path":"/时空/时段","label":"时段","kind":"枚举","values":["凌晨","清晨","上午","中午","下午","黄昏","夜晚","午夜"]},{"path":"/时空/当前场景","label":"场景","kind":"文本"},{"path":"/主角/体力","label":"体力","kind":"数值","range":[0,100]}],"pages":[{"name":"主角","icon":"heart","blocks":[{"type":"stats","title":"档案","items":[{"path":"/主角/姓名","label":"姓名","kind":"文本"},{"path":"/主角/性别","label":"性别","kind":"枚举","values":["女","男"]},{"path":"/主角/学院","label":"学院","kind":"枚举","values":["格兰芬多","斯莱特林","拉文克劳","赫奇帕奇","未分院"]},{"path":"/时空/学年","label":"学年","kind":"数值","range":[1,7]},{"path":"/主角/血统","label":"血统","kind":"枚举","values":["纯血","混血","麻瓜出身","未知"]},{"path":"/主角/出身","label":"出身","kind":"文本"},{"path":"/主角/魔杖/木材","label":"魔杖木材","kind":"文本"},{"path":"/主角/魔杖/杖芯","label":"杖芯","kind":"文本"},{"path":"/主角/声望","label":"声望","kind":"数值","range":[-100,100]}]},{"type":"bars","title":"体力与魔力","items":[{"path":"/主角/体力","label":"体力","kind":"数值","range":[0,100]},{"path":"/主角/魔力","label":"魔力","kind":"数值","range":[0,100]}]}]},{"name":"五维","icon":"star","blocks":[{"type":"bars","title":"五维","items":[{"path":"/五维/学业","label":"学业","kind":"数值","range":[0,10]},{"path":"/五维/胆识","label":"胆识","kind":"数值","range":[0,10]},{"path":"/五维/魅力","label":"魅力","kind":"数值","range":[0,10]},{"path":"/五维/共情","label":"共情","kind":"数值","range":[0,10]},{"path":"/五维/心志","label":"心志","kind":"数值","range":[0,10]}]}]},{"name":"时空","icon":"clock","blocks":[{"type":"stats","title":"此刻","items":[{"path":"/时空/日期","label":"日期","kind":"文本"},{"path":"/时空/时段","label":"时段","kind":"枚举","values":["凌晨","清晨","上午","中午","下午","黄昏","夜晚","午夜"]},{"path":"/时空/当前场景","label":"场景","kind":"文本"}]},{"type":"text","title":"当前事件","path":"/事件线索/当前事件","kind":"文本"},{"type":"tags","title":"进行中的支线","path":"/事件线索/进行中支线","kind":"列表"},{"type":"fold","title":"主线节点","open":true,"blocks":[{"type":"relation","path":"/事件线索/主线节点进度","fields":{"进度":"/事件线索/主线节点进度/{键}"}}]}]},{"name":"人物","icon":"users","blocks":[{"type":"roster","title":"人物与社群（点名字展开）","path":"/关系","hideEmpty":true,"gate":"/关系/{键}/社群等级","gateAt":1,"fields":{"身份":"/关系/{键}/身份","年龄":"/关系/{键}/年龄","身高":"/关系/{键}/身高","三围":"/关系/{键}/三围","体型":"/关系/{键}/体型","RANK":"/关系/{键}/社群等级","任务":"/关系/{键}/当前任务","支线":"/关系/{键}/支线状态","服饰":"/关系/{键}/服饰","印象":"/关系/{键}/印象"},"gated":{"名器评级":"/关系/{键}/名器评级","名器":"/关系/{键}/名器"},"bar":"/关系/{键}/社群等级","barRange":[1,10]}]}],"cardName":"哈莉·波特"},"modules":[{"tag":"story","role":"章节"},{"tag":"time","role":"页眉"},{"tag":"now_plot","role":"正文"},{"tag":"scene","role":"场景"},{"tag":"ability","role":"提示"},{"tag":"check","role":"检定"},{"tag":"event","role":"折叠","label":"特殊事件"},{"tag":"inner","role":"独白"}],"playerMark":"#","custom":[],"cardName":"哈莉·波特"}</script>
+<script>
+(function (root) {
+'use strict';
+const VERSION = '1.1.0';
+const AMP = String.fromCharCode(38);
+const ESCAPES = { '&': AMP + 'amp;', '<': AMP + 'lt;', '>': AMP + 'gt;', '"': AMP + 'quot;', "'": AMP + '#39;' };
+const escape = text => String(text === undefined || text === null ? '' : text).replace(/[&<>"']/g, ch => ESCAPES[ch]);
+const attr = value => escape(value).replace(/\n/g, ' ');
+const ICONS = {
+heart: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+map: '<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>',
+clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+users: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0M14 20a4.5 4.5 0 0 1 7 0"/>',
+bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+sword: '<path d="M4 20l10-10M14 10l4-6 2 2-6 4M4 20l3-1 1-3"/>',
+star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+book: '<path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/>',
+flag: '<path d="M5 21V4h11l-2 4 2 4H5"/>',
+bolt: '<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',
+shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+leaf: '<path d="M4 20C6 10 12 5 20 4c-1 8-6 14-16 16z"/><path d="M4 20l8-8"/>',
+gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+pin: '<path d="M12 21s-6-6-6-11a6 6 0 0 1 12 0c0 5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',
+eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+scroll: '<path d="M6 4h12v13a3 3 0 0 1-3 3H6z"/><path d="M6 20a3 3 0 0 1 0-6h9"/><path d="M9 8h6M9 11h6"/>',
+};
+const icon = name => (ICONS[name] ? '<svg class="cw-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[name] + '</svg>' : '');
+const segments = path => String(path || '').split('/').slice(1).map(part => part.replace(/~1/g, '/').replace(/~0/g, '~'));
+const PLACEHOLDER = part => part === '{键}' || part === '-';
+function resolve(data, path) {
+let current = data;
+for (const key of segments(path)) {
+if (current === null || current === undefined || typeof current !== 'object') return undefined;
+current = Array.isArray(current) ? current[Number(key)] : Object.prototype.hasOwnProperty.call(current, key) ? current[key] : undefined;
+}
+return current;
+}
+const unwrap = (value, kind) => (Array.isArray(value) && value.length === 2 && typeof value[1] === 'string' && (value[0] === null || typeof value[0] !== 'object') && kind !== '列表' ? value[0] : value);
+const isNumber = value => typeof value === 'number' && Number.isFinite(value);
+const percent = (value, range) => (isNumber(value) && range && range[1] > range[0] ? Math.round(Math.max(0, Math.min(1, (value - range[0]) / (range[1] - range[0]))) * 100) : null);
+const MISSING = '未知';
+function formatValue(raw, item) {
+const kind = item && item.kind;
+const value = unwrap(raw, kind);
+if (value === undefined || value === null) return MISSING;
+if (value === '') return '—';
+if (typeof value === 'boolean') return value ? '是' : '否';
+if (isNumber(value)) return String(value);   // v6：只显示实际值，不显示上限
+if (Array.isArray(value)) return value.length ? value.map(entry => (entry && typeof entry === 'object' ? '{…}' : String(entry))).join('、') : '—';
+if (typeof value === 'object') return '{…}';
+return String(value);
+}
+const label = item => item.label || segments(item.path).filter(part => !PLACEHOLDER(part)).pop() || item.path;
+const title = block => (block.title ? '<h3 class="cw-block-title">' + escape(block.title) + '</h3>' : '');
+const section = (kind, block, inner) => '<section class="cw-block cw-' + kind + '">' + title(block) + inner + '</section>';
+const missingClass = value => (value === undefined || value === null ? ' is-missing' : '');
+const barTrack = width => '<span class="cw-bar-track"><span class="cw-bar-fill" style="width: ' + (width === null ? 0 : width) + '%"></span></span>';
+const concrete = (fieldPath, basePath, key) => '/' + segments(basePath).concat([key]).concat(segments(fieldPath).slice(segments(basePath).length + 1)).map(part => part.replace(/~/g, '~0').replace(/\//g, '~1')).join('/');
+const entriesOf = value => (Array.isArray(value) ? value.map((entry, index) => [String(index), entry]) : value && typeof value === 'object' ? Object.entries(value) : []);
+const hue = name => { let hash = 0; for (const ch of String(name)) hash = (hash * 31 + ch.codePointAt(0)) % 360; return hash; };
+const renderers = {
+stats(block, data) {
+return section('stats', block, '<dl class="cw-stats-grid">' + block.items.map(item => { const value = resolve(data, item.path); return '<dt>' + escape(label(item)) + '</dt><dd class="cw-value' + missingClass(value) + '">' + escape(formatValue(value, item)) + '</dd>'; }).join('') + '</dl>');
+},
+bars(block, data) {
+return section('bars', block, block.items.map(item => { const value = unwrap(resolve(data, item.path), item.kind); const width = percent(value, item.range); return '<div class="cw-bar"><span class="cw-bar-label">' + escape(label(item)) + '</span>' + barTrack(width) + '<span class="cw-bar-value' + missingClass(value) + '">' + escape(formatValue(value, item)) + '</span></div>'; }).join(''));
+},
+gauge(block, data) {
+return section('gauge', block, '<div class="cw-gauge-row">' + block.items.map(item => { const value = unwrap(resolve(data, item.path), item.kind); const width = percent(value, item.range); const dash = width === null ? 0 : Math.round(width * 1.26); return '<figure class="cw-gauge-item"><svg class="cw-gauge" viewBox="0 0 48 30" data-percent="' + (width === null ? 0 : width) + '"><path class="cw-gauge-track" d="M4 26a20 20 0 0 1 40 0" pathLength="126"/><path class="cw-gauge-fill" d="M4 26a20 20 0 0 1 40 0" pathLength="126" stroke-dasharray="' + dash + ' 126"/></svg><figcaption><b>' + escape(formatValue(value, item)) + '</b><span>' + escape(label(item)) + '</span></figcaption></figure>'; }).join('') + '</div>');
+},
+tags(block, data) {
+const value = unwrap(resolve(data, block.path), block.kind);
+const tags = Array.isArray(value) ? value.map(entry => (entry && typeof entry === 'object' ? '{…}' : String(entry))) : value && typeof value === 'object' ? Object.keys(value) : value === undefined || value === null || value === '' ? [] : String(value).split(/[、，,]/).map(part => part.trim()).filter(Boolean);
+return section('tags', block, tags.length ? '<div class="cw-tags">' + tags.map(tag => '<span class="cw-tag">' + escape(tag) + '</span>').join('') + '</div>' : '<p class="cw-empty">—</p>');
+},
+levels(block, data) {
+const grid = block.columns ? ' style="grid-template-columns: repeat(' + block.columns + ', minmax(0, 1fr))"' : '';
+const tiers = block.tiers || [];
+return section('levels', block, '<div class="cw-levels"' + grid + '>' + block.items.map(item => {
+const value = unwrap(resolve(data, item.path), item.kind);
+const hit = isNumber(value) ? tiers.find(tier => tier.upTo === undefined || value <= tier.upTo) : null;
+return '<div class="cw-level"><span class="cw-level-name">' + escape(label(item)) + '</span>' + barTrack(percent(value, item.range)) + '<span class="cw-level-value' + missingClass(value) + '">' + escape(formatValue(value, item)) + '</span><span class="cw-level-tier' + (hit ? ' is-current' : '') + '">' + escape(hit ? hit.name : '—') + '</span></div>';
+}).join('') + '</div>');
+},
+list(block, data) {
+const entries = entriesOf(resolve(data, block.path)).slice(-block.recent).reverse();
+if (!entries.length) return section('list', block, '<p class="cw-empty">—</p>');
+const rows = entries.map(([key, entry]) => {
+if (!block.fields || !entry || typeof entry !== 'object') return '<li>' + escape(formatValue(entry, {})) + '</li>';
+return '<li>' + Object.entries(block.fields).map(([name, field]) => '<span class="cw-field"><b>' + escape(name) + '</b>' + escape(formatValue(resolve(data, concrete(field, block.path, key)), {})) + '</span>').join('') + '</li>';
+});
+return section('list', block, '<ul class="cw-list">' + rows.join('') + '</ul>');
+},
+relation(block, data) {
+const entries = entriesOf(resolve(data, block.path));
+if (!entries.length) return section('relation', block, '<p class="cw-empty">—</p>');
+return section('relation', block, '<div class="cw-relations">' + entries.map(([key]) => {
+const fields = Object.entries(block.fields).map(([name, field]) => {
+const raw = resolve(data, concrete(field, block.path, key));
+// hideEmpty：字段为空就整格不画，免得没登记过档案的人占出一行「—」
+if (block.hideEmpty && (raw === undefined || raw === null || raw === '')) return '';
+return '<span class="cw-field"><b>' + escape(name) + '</b>' + escape(formatValue(raw, {})) + '</span>';
+}).join('');
+const bar = block.bar ? barTrack(percent(unwrap(resolve(data, concrete(block.bar, block.path, key))), block.barRange)) : '';
+return '<article class="cw-relation"><span class="cw-avatar" style="--hue: ' + hue(key) + '">' + escape([...String(key)][0] || '?') + '</span><div class="cw-relation-body"><b class="cw-relation-name">' + escape(key) + '</b><div class="cw-relation-fields">' + fields + '</div>' + bar + '</div></article>';
+}).join('') + '</div>');
+},
+roster(block, data) {
+const entries = entriesOf(resolve(data, block.path));
+if (!entries.length) return section('roster', block, '<p class="cw-empty">—</p>');
+const gateAt = isNumber(block.gateAt) ? block.gateAt : 0;
+const cell = (name, field, key, block) => {
+const raw = resolve(data, concrete(field, block.path, key));
+if (block.hideEmpty && (raw === undefined || raw === null || raw === '')) return '';
+return '<span class="cw-field"><b>' + escape(name) + '</b>' + escape(formatValue(raw, {})) + '</span>';
+};
+return section('roster', block, '<div class="cw-rosters">' + entries.map(([key]) => {
+const fav = block.gate ? unwrap(resolve(data, concrete(block.gate, block.path, key))) : undefined;
+const favText = isNumber(fav) ? String(fav) : MISSING;
+const unlocked = isNumber(fav) && fav >= gateAt;
+const rows = Object.entries(block.fields || {}).map(([name, field]) => cell(name, field, key, block)).join('');
+const intimate = unlocked ? Object.entries(block.gated || {}).map(([name, field]) => cell(name, field, key, block)).join('') : '';
+const tail = unlocked
+? (intimate ? '<div class="cw-roster-fields is-intimate">' + intimate + '</div>' : '<p class="cw-locked is-open">名器与私密档案 · 已解锁，尚未写入</p>')
+: '<p class="cw-locked">名器与私密档案 · 好感度 ' + gateAt + ' 解锁（当前 ' + escape(favText) + '）</p>';
+const bar = block.bar ? barTrack(percent(unwrap(resolve(data, concrete(block.bar, block.path, key))), block.barRange)) : '';
+return '<details class="cw-roster"><summary><span class="cw-avatar" style="--hue: ' + hue(key) + '">' + escape([...String(key)][0] || '?') + '</span><b class="cw-roster-name">' + escape(key) + '</b>' + (bar ? '<span class="cw-roster-bar">' + bar + '</span>' : '') + '<span class="cw-roster-fav">' + escape(favText) + '</span></summary><div class="cw-roster-body"><div class="cw-roster-fields">' + rows + '</div>' + tail + '</div></details>';
+}).join('') + '</div>');
+},
+timeline(block, data) {
+const entries = entriesOf(resolve(data, block.path)).slice(-block.recent).reverse();
+if (!entries.length) return section('timeline', block, '<p class="cw-empty">—</p>');
+return section('timeline', block, '<ol class="cw-timeline">' + entries.map(([key, entry]) => {
+const time = block.time && entry && typeof entry === 'object' ? formatValue(resolve(data, concrete(block.time, block.path, key)), {}) : '';
+const note = block.note && entry && typeof entry === 'object' ? formatValue(resolve(data, concrete(block.note, block.path, key)), {}) : formatValue(entry, {});
+return '<li>' + (time ? '<time>' + escape(time) + '</time>' : '') + '<span>' + escape(note) + '</span></li>';
+}).join('') + '</ol>');
+},
+crisis(block, data) {
+const value = unwrap(resolve(data, block.path), block.kind);
+const current = isNumber(value) ? block.tiers.findIndex(tier => tier.upTo === undefined || value <= tier.upTo) : block.tiers.findIndex(tier => tier.name === value);
+return section('crisis', block, '<div class="cw-tiers">' + block.tiers.map((tier, index) => '<span class="cw-tier is-' + tier.tone + (index === current ? ' is-current' : '') + '">' + escape(tier.name) + '</span>').join('') + '</div>');
+},
+delta(block, data, previous) {
+return section('delta', block, block.items.map(item => {
+const now = unwrap(resolve(data, item.path), item.kind); const before = previous ? unwrap(resolve(previous, item.path), item.kind) : undefined;
+const change = isNumber(now) && isNumber(before) ? now - before : null;
+const state = change === null || change === 0 ? 'same' : change > 0 ? 'up' : 'down';
+const text = change === null || change === 0 ? formatValue(now, item) : (change > 0 ? '+' : '') + change;
+return '<span class="cw-delta-item"><b>' + escape(label(item)) + '</b><span class="cw-delta is-' + state + '">' + escape(text) + '</span></span>';
+}).join(''));
+},
+text(block, data) {
+const text = block.text !== undefined ? block.text : formatValue(resolve(data, block.path), block);
+return section('text', block, '<p class="cw-text">' + escape(text) + '</p>');
+},
+fold(block, data, previous) {
+return '<details class="cw-fold"' + (block.open ? ' open' : '') + '><summary>' + escape(block.title) + '</summary>' + block.blocks.map(child => renderBlock(child, data, previous)).join('') + '</details>';
+},
+custom(block) { return '<section class="cw-block cw-custom">' + block.html + '</section>'; },
+};
+function renderBlock(block, data, previous) {
+const render = renderers[block.type];
+return render ? render(block, data || {}, previous || null) : '';
+}
+function renderPages(sheet, data, previous) {
+return { pages: sheet.pages.map(page => ({ name: page.name, icon: page.icon ? icon(page.icon) : '', html: page.blocks.map(block => renderBlock(block, data, previous)).join('') })), warnings: [] };
+}
+function renderSummary(sheet, data) {
+return sheet.summary.map(item => '<span class="cw-summary-item"><b>' + escape(label(item)) + '</b>' + escape(formatValue(resolve(data, item.path), item)) + '</span>').join('');
+}
+const ROLE_OPEN = { 页眉: 'header class="cw-head"', 章节: 'h2 class="cw-chapter"', 场景: 'p class="cw-scene"', 独白: 'p class="cw-mono"', 提示: 'aside class="cw-tip"', 检定: 'div class="cw-check"' };
+const tagName = open => open.split(/\s/)[0];
+function sayLine(line, playerMark) {
+const say = /^\{([^{}]*)\}\s*[「“"](.+?)[」”"]\s*$/.exec(line.trim());
+if (!say) return null;
+const player = say[1] === playerMark;
+return '<p class="cw-say' + (player ? ' is-player' : '') + '"><b class="cw-speaker">' + escape(player ? '你' : say[1]) + '</b><q>' + escape(say[2]) + '</q></p>';
+}
+function paragraphs(text, playerMark) {
+return text.split(/\n[ \t]*\n/).map(part => part.trim()).filter(Boolean).map(part => {
+const lines = part.split('\n');
+const says = lines.map(line => sayLine(line, playerMark));
+return says.every(Boolean) ? says.join('') : '<p class="cw-para">' + lines.map(escape).join('<br>') + '</p>';
+}).join('');
+}
+function renderBody(sheet, source) {
+const text = String(source || '').replace(/\r\n?/g, '\n');
+const modules = new Map(sheet.modules.map(module => [module.tag.toLowerCase(), module]));
+const parts = [];
+const pattern = /<([A-Za-z][\w-]*)(?:\s[^>]*)?>([\s\S]*?)<\/\1\s*>/g;
+let cursor = 0; let match;
+while ((match = pattern.exec(text))) {
+const loose = text.slice(cursor, match.index).trim();
+if (loose) parts.push(paragraphs(loose, sheet.playerMark));
+const module = modules.get(match[1].toLowerCase());
+const inner = match[2].trim();
+const role = module ? module.role : '正文';
+if (role === '隐藏') { cursor = match.index + match[0].length; continue; }
+if (role === '正文' || role === '对白') parts.push(paragraphs(inner, sheet.playerMark));
+else if (role === '折叠') parts.push('<details class="cw-fold"><summary>' + escape(module.label || match[1]) + '</summary>' + paragraphs(inner, sheet.playerMark) + '</details>');
+else { const open = ROLE_OPEN[role]; parts.push('<' + open + '>' + escape(inner).replace(/\n/g, '<br>') + '</' + tagName(open) + '>'); }
+cursor = match.index + match[0].length;
+}
+const tail = text.slice(cursor).trim();
+if (!parts.length) return '<div class="cw-fallback">' + paragraphs(text, sheet.playerMark) + '</div>';
+if (tail) parts.push(paragraphs(tail, sheet.playerMark));
+return parts.join('');
+}
+function renderField(field, draft) {
+const value = draft[field.key];
+const on = option => (Array.isArray(value) ? value.includes(option) : value === option);
+if (field.type === '文本') return '<input class="cw-input" type="text" data-cw-field="' + attr(field.key) + '" value="' + attr(value === undefined ? '' : value) + '"' + (field.hint ? ' placeholder="' + attr(field.hint) + '"' : '') + (field.required ? ' required' : '') + '>';
+if (field.type === '长文本') return '<textarea class="cw-input cw-textarea" data-cw-field="' + attr(field.key) + '"' + (field.hint ? ' placeholder="' + attr(field.hint) + '"' : '') + (field.required ? ' required' : '') + '>' + escape(value === undefined ? '' : value) + '</textarea>';
+if (field.type === '单选') return '<div class="cw-choices">' + field.options.map(option => '<label class="cw-choice' + (on(option) ? ' is-on' : '') + '"><input type="radio" name="' + attr(field.key) + '" value="' + attr(option) + '" data-cw-field="' + attr(field.key) + '"' + (on(option) ? ' checked' : '') + '>' + escape(option) + '</label>').join('') + '</div>';
+if (field.type === '多选' || field.type === '人物列表') return '<div class="cw-choices' + (field.type === '人物列表' ? ' is-people' : '') + '">' + field.options.map(option => '<label class="cw-choice' + (on(option) ? ' is-on' : '') + '"><input type="checkbox" value="' + attr(option) + '" data-cw-field="' + attr(field.key) + '"' + (field.max ? ' data-cw-max="' + attr(field.max) + '"' : '') + (on(option) ? ' checked' : '') + '>' + escape(option) + '</label>').join('') + '</div>';
+if (field.type === '滑杆') return '<input class="cw-slider" type="range" min="' + attr(field.range[0]) + '" max="' + attr(field.range[1]) + '" value="' + attr(isNumber(value) ? value : field.range[0]) + '" data-cw-field="' + attr(field.key) + '"><output class="cw-slider-value">' + escape(isNumber(value) ? value : field.range[0]) + '</output>';
+return '';
+}
+function renderStart(sheet, draft, stepIndex) {
+const steps = sheet.steps.map(step => step.name).concat(['核对']);
+const nav = steps.map((name, index) => '<li class="cw-step' + (index === stepIndex ? ' is-current' : index < stepIndex ? ' is-done' : '') + '">' + escape(name) + '</li>').join('');
+const last = stepIndex >= sheet.steps.length;
+let body;
+if (last) {
+body = '<dl class="cw-review">' + sheet.steps.flatMap(step => step.fields).map(field => { const value = draft[field.key]; const empty = value === undefined || value === '' || (Array.isArray(value) && !value.length); return '<dt>' + escape(field.key) + '</dt>' + (empty ? '<dd class="is-missing">未填</dd>' : '<dd>' + escape(Array.isArray(value) ? value.join('、') : value) + '</dd>'); }).join('') + '</dl>';
+} else {
+const step = sheet.steps[stepIndex];
+body = step.fields.map(field => '<div class="cw-field-row"><label class="cw-field-label">' + escape(field.key) + (field.required ? '<i class="cw-required">*</i>' : '') + '</label>' + renderField(field, draft) + '</div>').join('');
+}
+const buttons = '<button type="button" class="cw-btn" data-cw-nav="back"' + (stepIndex === 0 ? ' disabled' : '') + '>上一步</button>' + (last ? '<button type="button" class="cw-btn is-primary" data-cw-nav="submit">开始</button>' : '<button type="button" class="cw-btn is-primary" data-cw-nav="next">下一步</button>');
+return '<div class="cw-start">' + (sheet.title ? '<h1 class="cw-title">' + escape(sheet.title) + '</h1>' : '') + '<ol class="cw-steps">' + nav + '</ol><div class="cw-start-body">' + body + '</div><div class="cw-start-nav">' + buttons + '</div></div>';
+}
+root.CardwrightCore = { version: VERSION, escape, icon, resolve, formatValue, renderSummary, renderPages, renderBlock, renderStart, renderBody, ICONS: Object.keys(ICONS) };
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+(function (root) {
+'use strict';
+const core = root.CardwrightCore;
+const g = name => (typeof root[name] === 'function' ? root[name] : null);
+const disposers = [];
+const log = (tag, ...rest) => { try { console.log('[' + tag + ']', ...rest); } catch (ignored) {} };
+function fillTemplate(template, draft) {
+return String(template || '').replace(/\{([^{}]+)\}/g, (whole, key) => { const value = draft[key]; return value === undefined || value === null ? '' : Array.isArray(value) ? value.join('、') : String(value); }).replace(/[ \t]+\n/g, '\n');
+}
+const entryOf = (name, content) => ({ name, enabled: true, strategy: { type: 'constant' }, position: { type: 'before_character_definition', order: 100 }, content });
+function upsertEntry(entries, entry) {
+const list = Array.isArray(entries) ? entries.slice() : [];
+const at = list.findIndex(item => item && item.name === entry.name);
+if (at >= 0) list[at] = Object.assign({}, list[at], entry); else list.push(entry);
+return list;
+}
+function clampPosition(position, viewport, size) {
+return { x: Math.max(0, Math.min(viewport.width - size, Math.round(position.x))), y: Math.max(0, Math.min(viewport.height - size, Math.round(position.y))) };
+}
+async function waitMvu(timeoutMs) {
+const wait = g('waitGlobalInitialized');
+if (wait) {
+let timer;
+try { await Promise.race([Promise.resolve(wait('Mvu')), new Promise(resolve => { timer = setTimeout(resolve, Math.max(0, timeoutMs)); })]); } catch (ignored) {}
+clearTimeout(timer);
+}
+return !!(root.Mvu && typeof root.Mvu.getMvuData === 'function');
+}
+function readData() {
+try {
+if (root.Mvu && typeof root.Mvu.getMvuData === 'function') {
+const data = root.Mvu.getMvuData({ type: 'message', message_id: 'latest' });
+return (data && data.stat_data) || {};
+}
+} catch (error) { log('骨架', '读 MVU 失败', error); }
+try {
+const read = g('getVariables');
+if (read) { const data = read({ type: 'message', message_id: 'latest' }); return (data && data.stat_data) || {}; }
+} catch (error) { log('骨架', '读变量失败', error); }
+return {};
+}
+const isLatest = () => {
+const current = g('getCurrentMessageId'); const last = g('getLastMessageId');
+if (!current || !last) return true;
+try { return current() === last(); } catch (ignored) { return true; }
+};
+function setAt(object, pointer, value) {
+if (!object || typeof object !== 'object') return;
+const keys = String(pointer || '').split('/').slice(1).map(part => part.replace(/~1/g, '/').replace(/~0/g, '~'));
+if (!keys.length || keys.some(key => key === '__proto__' || key === 'constructor' || key === 'prototype')) return;
+let current = object;
+for (let index = 0; index < keys.length - 1; index++) {
+const key = keys[index];
+if (!current[key] || typeof current[key] !== 'object') current[key] = {};
+current = current[key];
+}
+current[keys[keys.length - 1]] = value;
+}
+function listen(name, handler) {
+const on = g('eventOn');
+if (!on || name === undefined || name === null) return;
+try { const handle = on(name, handler); if (handle && typeof handle.stop === 'function') disposers.push(handle); } catch (error) { log('骨架', '订阅失败', name, error); }
+}
+function dispose() {
+while (disposers.length) { const handle = disposers.pop(); try { handle.stop(); } catch (ignored) {} }
+}
+function copyText(text) {
+const fallback = () => {
+try {
+const area = document.createElement('textarea');
+area.value = text;
+area.setAttribute('readonly', '');
+area.style.position = 'fixed';
+area.style.top = '0';
+area.style.opacity = '0';
+document.body.appendChild(area);
+area.select();
+document.execCommand('copy');
+area.remove();
+return true;
+} catch (error) { log('骨架', '复制失败', error); return false; }
+};
+try {
+if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') return navigator.clipboard.writeText(text).catch(fallback);
+} catch (ignored) {}
+return Promise.resolve(fallback());
+}
+function errorPanel(mount, tag, step, error) {
+const target = mount || document.body;
+log(tag, step, error);
+const message = error && error.message ? String(error.message) : String(error);
+const report = '[' + tag + '] ' + step + '：' + message + (error && error.stack ? '\n' + String(error.stack) : '');
+const old = target.querySelector('.cw-error');
+if (old) old.remove();
+const panel = document.createElement('section');
+panel.className = 'cw-error';
+panel.innerHTML = '<b>' + core.escape(step) + '出错</b><p>' + core.escape(message) + '</p><button type="button" class="cw-btn" data-cw-copy>复制报错</button>';
+panel.addEventListener('click', event => { const button = event.target && event.target.closest ? event.target.closest('[data-cw-copy]') : null; if (button) copyText(report); });
+target.appendChild(panel);
+}
+// ===== 外观：五套主题。主题只覆盖 CSS 令牌，不改布局与信息层级 =====
+const THEMES = [
+{ id: 'p5', name: '心之怪盗', sw: '#e60012', note: '红黑硬边·半调网点' },
+{ id: 'gilded', name: '镀金', sw: '#d9bb7a', note: '原版深林绿·古金' },
+{ id: 'hogwarts', name: '羊皮纸', sw: '#8c2c21', note: '纸底墨字·衬线' },
+{ id: 'night', name: '夜航', sw: '#7c8cff', note: '深蓝紫·微光' },
+{ id: 'house', name: '学院随色', sw: '#c8102e', note: '跟随分院结果自动换色' },
+];
+const THEME_KEY = 'cwTheme';
+const THEME_DEFAULT = 'p5';
+const themeIds = THEMES.map(item => item.id);
+let themeNote = '';
+function themeOf(id) { for (const item of THEMES) if (item.id === id) return item; return null; }
+// 同源时跨楼层共享：内存里的 __cwTheme 优先（切了立刻生效），localStorage 负责跨会话
+function themeWindows() {
+const list = [root];
+try { if (window.parent && window.parent !== window) list.push(window.parent); } catch (ignored) {}
+try { if (window.top && window.top !== window && list.indexOf(window.top) < 0) list.push(window.top); } catch (ignored) {}
+return list;
+}
+function readTheme() {
+for (const win of themeWindows()) { try { if (themeIds.indexOf(win.__cwTheme) >= 0) return win.__cwTheme; } catch (ignored) {} }
+try { const stored = window.localStorage.getItem(THEME_KEY); if (themeIds.indexOf(stored) >= 0) return stored; } catch (ignored) {}
+return THEME_DEFAULT;
+}
+function themeSource() {
+for (const win of themeWindows()) { try { if (themeIds.indexOf(win.__cwTheme) >= 0) return '本次会话'; } catch (ignored) {} }
+try { if (themeIds.indexOf(window.localStorage.getItem(THEME_KEY)) >= 0) return '本机已保存'; } catch (ignored) {}
+return '默认';
+}
+function writeTheme(id) {
+if (themeIds.indexOf(id) < 0) return '未识别的主题';
+let saved = false; let shared = false;
+for (const win of themeWindows()) { try { win.__cwTheme = id; shared = true; } catch (ignored) {} }
+try { window.localStorage.setItem(THEME_KEY, id); saved = true; } catch (ignored) {}
+return saved ? '本机已保存' : shared ? '本次会话' : '仅本楼层';
+}
+function houseOf(data) {
+const value = core.resolve(data, '/主角/学院');
+return value === undefined || value === null || typeof value === 'object' ? '' : String(value);
+}
+// 主题是界面偏好，不写进 MVU 变量：只落在 <html> 的属性上
+function applyTheme(data) {
+const theme = readTheme();
+const house = theme === 'house' ? houseOf(data) : '';
+const docs = [document];
+for (const win of themeWindows()) { try { if (win.document && win.document !== document && docs.indexOf(win.document) < 0) docs.push(win.document); } catch (ignored) {} }
+for (const doc of docs) {
+try {
+const el = doc.documentElement;
+el.setAttribute('data-cw-theme', theme);
+if (house) el.setAttribute('data-cw-house', house); else el.removeAttribute('data-cw-house');
+} catch (ignored) {}
+}
+return theme;
+}
+function skinPanel(current) {
+const hit = themeOf(current);
+const buttons = THEMES.map(item => '<button type="button" class="cw-skin" data-cw-skin="' + item.id + '" aria-pressed="' + (item.id === current ? 'true' : 'false') + '"><i class="cw-skin-swatch" style="--sw: ' + item.sw + '"></i>' + core.escape(item.name) + '</button>').join('');
+return '<div class="cw-skins" role="group" aria-label="外观主题">' + buttons + '</div><p class="cw-skin-note">当前：' + core.escape(hit ? hit.name + '（' + hit.note + '）' : current) + ' · ' + core.escape(themeNote || themeSource()) + '</p>';
+}
+function mountStatus(mount, sheet, tag) {
+let latest = null; let previous = null; let page = 0; let collapsed = !!sheet.collapsed; let skins = false;
+const draw = data => {
+try {
+if (data !== latest) { previous = latest; latest = data; }
+const theme = applyTheme(latest || {});
+const summary = sheet.summary && sheet.summary.length ? core.renderSummary(sheet, latest || {}) : '';
+const header = '<header class="cw-status-bar">' + (sheet.title ? '<span class="cw-status-title">' + core.escape(sheet.title) + '</span>' : '') + '<span class="cw-summary">' + summary + '</span>' + '<button type="button" class="cw-toggle cw-skin-btn" data-cw-skins aria-expanded="' + (skins ? 'true' : 'false') + '">外观</button>' + '<button type="button" class="cw-toggle" data-cw-toggle>' + (collapsed ? '展开' : '收起') + '</button>' + (skins ? skinPanel(theme) : '') + '</header>';
+let body = '';
+if (!collapsed) {
+const rendered = core.renderPages(sheet, latest || {}, previous);
+if (!(page >= 0 && page < rendered.pages.length)) page = 0;
+const tabs = rendered.pages.map((item, index) => '<button type="button" class="cw-tab' + (index === page ? ' is-on' : '') + '" data-cw-page="' + index + '">' + item.icon + '<span>' + core.escape(item.name) + '</span></button>').join('');
+const current = rendered.pages[page];
+body = '<nav class="cw-tabs">' + tabs + '</nav><div class="cw-page">' + (current ? current.html : '') + '</div>';
+}
+mount.innerHTML = '<div class="cw-status' + (collapsed ? ' is-collapsed' : '') + '">' + header + body + '</div>';
+} catch (error) { errorPanel(mount, tag, '渲染', error); }
+};
+mount.addEventListener('click', event => {
+const hit = event.target && event.target.closest ? event.target.closest('[data-cw-skins], [data-cw-skin], [data-cw-toggle], [data-cw-page]') : null;
+if (!hit) return;
+if (hit.hasAttribute('data-cw-skin')) themeNote = writeTheme(hit.getAttribute('data-cw-skin'));
+else if (hit.hasAttribute('data-cw-skins')) skins = !skins;
+else if (hit.hasAttribute('data-cw-toggle')) collapsed = !collapsed;
+else page = Number(hit.getAttribute('data-cw-page')) || 0;
+draw(latest === null ? readData() : latest);
+});
+return { draw, hide: () => { mount.textContent = ''; } };
+}
+async function runStatus(mount, sheet, tag) {
+if (!mount) throw new Error('文档里没有状态栏的挂载点。');
+if (!isLatest()) { mount.textContent = ''; return; }
+const view = mountStatus(mount, sheet, tag);
+const hideIfOld = () => { if (!isLatest()) { view.hide(); dispose(); } };
+await waitMvu(2500);
+view.draw(readData());
+if (root.Mvu && root.Mvu.events) listen(root.Mvu.events.VARIABLE_UPDATE_ENDED, after => view.draw((after && after.stat_data) || readData()));
+if (root.tavern_events) {
+listen(root.tavern_events.MESSAGE_RECEIVED, hideIfOld);
+listen(root.tavern_events.MESSAGE_SENT, hideIfOld);
+listen(root.tavern_events.CHAT_CHANGED, () => { dispose(); view.draw(readData()); });
+}
+}
+async function bootStatus(sheet, tag) {
+await runStatus(document.getElementById('cw-app'), sheet, tag);
+}
+async function bootBody(sheet, tag) {
+const mount = document.getElementById('cw-app');
+if (!mount) throw new Error('文档里没有正文的挂载点。');
+const source = document.getElementById('cw-source');
+try { mount.innerHTML = core.renderBody(sheet, source ? source.textContent : ''); } catch (error) { errorPanel(mount, tag, '渲染', error); }
+if (sheet.statusHead && sheet.statusHead.pages) {
+const head = document.getElementById('cw-status-head');
+if (head) await runStatus(head, sheet.statusHead, tag);
+}
+}
+function composer() {
+let doc = null;
+try { doc = window.parent && window.parent !== window ? window.parent.document : null; } catch (ignored) { doc = null; }
+const pick = d => d && { textarea: d.querySelector('#send_textarea'), send: d.querySelector('#send_but') };
+const found = pick(doc);
+return found && found.textarea ? found : pick(document);
+}
+async function submit(sheet, draft, tag, state) {
+const notes = [];
+if (sheet.writes.entry) {
+const content = fillTemplate(sheet.writes.entry.template, draft);
+const create = g('getOrCreateChatWorldbook'); const update = g('updateWorldbookWith'); const names = g('getCharWorldbookNames');
+let book = null;
+if (create) { book = await create('current', sheet.cardName + ' · 存档'); }
+else if (names) { const bound = await names('current'); book = bound && bound.primary; notes.push('这个酒馆版本没有聊天世界书，玩家设定写进了角色主世界书。'); }
+if (!book || !update) throw new Error('没有可写的世界书接口。');
+await update(book, entries => upsertEntry(entries, entryOf(sheet.writes.entry.name, content)));
+}
+if (sheet.writes.opening && !state.openingSent) {
+const text = fillTemplate(sheet.writes.opening, draft); const box = composer();
+if (box && box.textarea && !box.textarea.value.trim()) {
+box.textarea.value = text;
+box.textarea.dispatchEvent(new Event('input', { bubbles: true }));
+if (box.send) box.send.click();
+state.openingSent = true;
+}
+else { try { await navigator.clipboard.writeText(text); notes.push('输入框里已有内容，开场信息已复制到剪贴板，请自己粘贴。'); } catch (ignored) { notes.push('开场信息没能填入输入框，请手动复制：' + text); } }
+}
+if (sheet.writes.variables) {
+await waitMvu(2500);
+if (root.Mvu && typeof root.Mvu.replaceMvuData === 'function') {
+try {
+const data = root.Mvu.getMvuData({ type: 'message', message_id: 'latest' }) || { stat_data: {} };
+if (!data.stat_data || typeof data.stat_data !== 'object') data.stat_data = {};
+for (const field of sheet.steps.flatMap(step => step.fields)) if (field.write && draft[field.key] !== undefined) setAt(data.stat_data, field.write, draft[field.key]);
+await root.Mvu.replaceMvuData(data, { type: 'message', message_id: 'latest' });
+await root.Mvu.replaceMvuData(data, { type: 'chat' });
+} catch (error) { log(tag, '初始变量', error); notes.push('初始变量写入失败；进入游戏后让模型重算一次即可。'); }
+} else notes.push('MVU 没有就绪，初始变量没有写入；进入游戏后让模型重算一次即可。');
+}
+return notes;
+}
+async function bootStart(sheet, tag) {
+const mount = document.getElementById('cw-app');
+if (!mount) throw new Error('文档里没有创角页的挂载点。');
+const draft = {};
+const progress = { openingSent: false };
+let at = 0;
+let busy = false;
+const seed = () => { if (at >= sheet.steps.length) return; for (const field of sheet.steps[at].fields) if (field.type === '滑杆' && field.range && draft[field.key] === undefined) draft[field.key] = field.range[0]; };
+const render = () => { try { seed(); mount.innerHTML = core.renderStart(sheet, draft, at); } catch (error) { errorPanel(mount, tag, '渲染', error); } };
+const missing = () => {
+const bad = [];
+if (at >= sheet.steps.length) return bad;
+for (const field of sheet.steps[at].fields) {
+if (!field.required) continue;
+const value = draft[field.key];
+if (value === undefined || value === null || value === '' || (Array.isArray(value) && !value.length)) bad.push(field.key);
+}
+return bad;
+};
+const markInvalid = bad => {
+const controls = mount.querySelectorAll('[data-cw-field]');
+for (const control of controls) {
+if (bad.indexOf(control.getAttribute('data-cw-field')) < 0) continue;
+const row = control.closest('.cw-field-row');
+(row || control).classList.add('is-invalid');
+}
+};
+const reflect = target => {
+if (target.type === 'radio' || target.type === 'checkbox') {
+const holder = target.closest('.cw-choices');
+if (!holder) return;
+for (const input of holder.querySelectorAll('input')) { const choice = input.closest('.cw-choice'); if (choice) choice.classList.toggle('is-on', input.checked); }
+} else if (target.type === 'range') {
+const output = target.nextElementSibling;
+if (output && output.classList && output.classList.contains('cw-slider-value')) output.textContent = String(target.value);
+}
+};
+const collect = target => {
+const key = target.getAttribute('data-cw-field');
+if (!key) return;
+const row = target.closest('.cw-field-row');
+if (row) row.classList.remove('is-invalid');
+if (target.type === 'checkbox') {
+const list = Array.isArray(draft[key]) ? draft[key].slice() : [];
+const max = Number(target.getAttribute('data-cw-max')) || 0;
+const found = list.indexOf(target.value);
+if (target.checked && found < 0) { if (max && list.length >= max) target.checked = false; else list.push(target.value); }
+if (!target.checked && found >= 0) list.splice(found, 1);
+draft[key] = list;
+} else if (target.type === 'range') draft[key] = Number(target.value);
+else draft[key] = target.value;
+reflect(target);
+};
+const onEdit = event => { const target = event.target; if (target && target.getAttribute && target.getAttribute('data-cw-field')) collect(target); };
+mount.addEventListener('input', onEdit);
+mount.addEventListener('change', onEdit);
+mount.addEventListener('click', event => {
+const target = event.target && event.target.closest ? event.target.closest('[data-cw-nav]') : null;
+if (!target || busy) return;
+const nav = target.getAttribute('data-cw-nav');
+if (nav === 'back' && at > 0) { at -= 1; render(); }
+else if (nav === 'next') {
+const bad = missing();
+if (bad.length) { markInvalid(bad); return; }
+at += 1; render();
+} else if (nav === 'submit') {
+busy = true; target.disabled = true;
+submit(sheet, draft, tag, progress).then(notes => {
+busy = false;
+const items = (notes || []).map(note => '<li>' + core.escape(note) + '</li>').join('');
+mount.innerHTML = '<section class="cw-done"><b>' + core.escape(sheet.title || '创角完成') + '</b><p>设定已写好，开始你的故事吧。</p>' + (items ? '<ul>' + items + '</ul>' : '') + '</section>';
+}).catch(error => { busy = false; target.disabled = false; errorPanel(mount, tag, '提交', error); });
+}
+});
+render();
+}
+function boot() {
+const begin = () => {
+const holder = document.getElementById('cw-sheet');
+let sheet;
+try { sheet = JSON.parse(holder.textContent); } catch (error) { errorPanel(document.body, '骨架', '解析装配单', error); return; }
+const tag = (sheet.cardName || '卡') + '·' + (sheet.kind || '前端');
+applyTheme(readData());
+const run = sheet.kind === '状态栏' ? bootStatus : sheet.kind === '正文美化' ? bootBody : bootStart;
+run(sheet, tag).catch(error => errorPanel(document.getElementById('cw-app') || document.body, tag, '启动', error));
+};
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', begin);
+else begin();
+}
+root.CardwrightHost = { boot, helpers: { fillTemplate, entryOf, upsertEntry, clampPosition, waitMvu, readData, isLatest, setAt, theme: { list: THEMES, read: readTheme, write: writeTheme, apply: applyTheme, panel: skinPanel, source: themeSource, house: houseOf } } };
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
+<script>CardwrightHost.boot();</script>
+</body>
+</html>
+```
