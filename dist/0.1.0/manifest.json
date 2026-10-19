@@ -1,0 +1,13 @@
+{
+  "version": "0.1.0",
+  "entry": "core.mjs",
+  "files": [
+    {
+      "path": "core.mjs",
+      "sha256": "9107f8dde61df14b65e54c2979241193385e1b62083737d648e8d466036d76bf",
+      "bytes": 29306
+    }
+  ],
+  "contract": "2026-11-a",
+  "schema": 1
+}

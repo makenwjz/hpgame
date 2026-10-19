@@ -1,6 +1,5 @@
-# ===== 依赖与构建产物 =====
+# ===== 依赖 =====
 node_modules/
-dist/
 *.log
 
 # ===== 采集/逆向临时 =====
@@ -21,3 +20,7 @@ cards/HP-Reverb/重构方案-v10.1.md
 cards/HP-Reverb/Persona化重构设计.md
 remote-access/
 st/
+
+# ===== dist 是发布产物，必须入库（否则 CDN 404） =====
+!dist/
+!dist/**
